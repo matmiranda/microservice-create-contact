@@ -7,12 +7,12 @@ namespace FiapGrupo57Fase2.Domain.Interface.Repository
 {
     public interface IContatosRepository
     {
-        Task<ContatosGetResponse> ObterContatoPorId(int id);
+        Task<ContatoEntity> ObterContatoPorId(int id);
         Task<int> Adicionar(ContatoEntity contato);
-        Task<bool> ContatoExiste(ContatosPostRequest contato);
+        Task<bool> ContatoExistePorEmail(string email);
         Task<bool> ContatoExistePorId(int id);
-        List<ContatosGetResponse> ObterPorDDD(int ddd);
-        List<ContatosGetResponse> ObterPorDDDRegiao(int ddd, RegiaoEnum regiao);
+        Task<IEnumerable<ContatoEntity>> ObterPorDDD(int ddd);
+        Task<IEnumerable<ContatoEntity>> ObterPorDDDRegiao(int ddd, RegiaoEnum regiao);
         Task Atualizar(ContatoEntity contato);
         Task Excluir(int id);
     }

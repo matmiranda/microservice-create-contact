@@ -42,11 +42,10 @@ namespace FiapGrupo57Fase2.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [SwaggerResponse(400, "Erro de validação", typeof(ExceptionResponse), "application/json")]
-        public ActionResult<IEnumerable<ContatosGetResponse>> GetContatos(
-            [FromQuery, BindRequired] int ddd,
-            [FromQuery] string? regiao = null)
+        public async Task<ActionResult<IEnumerable<ContatosGetResponse>>> GetContatos(
+            [FromQuery, BindRequired] int ddd)
         {
-            return Ok(_contatoService.ObterContatos(ddd, regiao));
+            return Ok(await _contatoService.ObterContatos(ddd));
         }
 
         /// <summary>

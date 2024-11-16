@@ -16,9 +16,14 @@ namespace FiapGrupo57Fase2.Repository
             return await connection.QueryFirstOrDefaultAsync<T>(sql, param);
         }
 
-        public IEnumerable<T> Query<T>(IDbConnection connection, string sql, object param = null)
+        //public IEnumerable<T> Query<T>(IDbConnection connection, string sql, object param = null)
+        //{
+        //    return connection.Query<T>(sql, param);
+        //}
+
+        public async Task<IEnumerable<T>> QueryAsync<T>(IDbConnection connection, string sql, object param = null)
         {
-            return connection.Query<T>(sql, param);
+            return await connection.QueryAsync<T>(sql, param);
         }
 
         public async Task ExecuteAsync(IDbConnection connection, string sql, object param = null)

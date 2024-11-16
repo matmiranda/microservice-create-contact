@@ -7,7 +7,7 @@ namespace FiapGrupo57Fase2.Domain.Interface.Service
     {
         Task<ContatosGetResponse> ObterContatoPorId(int id);
         Task<ContatosPostResponse> AdicionarContato(ContatosPostRequest contato);
-        List<ContatosGetResponse> ObterContatos(int ddd, string? regiao);
+        Task<List<ContatosGetResponse>> ObterContatos(int ddd);
         Task AtualizarContato(ContatosPutRequest contato);
         Task ExcluirContato(int id);
     }

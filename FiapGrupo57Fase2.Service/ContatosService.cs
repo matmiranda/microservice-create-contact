@@ -25,42 +25,35 @@ namespace FiapGrupo57Fase2.Service
 
         public async Task<ContatosGetResponse> ObterContatoPorId(int id)
         {
+            //valida contato
             await ValidaIdContato(id);
 
-            return await _contatosRepository.ObterContatoPorId(id);
+            //consulta contato
+            var contatoEntity =  await _contatosRepository.ObterContatoPorId(id);
+
+            //mapper contato
+            return ContatoMapper.ContatoPorId(contatoEntity);
         }
 
-        public List<ContatosGetResponse> ObterContatos(int ddd, string? regiao)
+        public async Task<List<ContatosGetResponse>> ObterContatos(int ddd)
         {
-            if (!string.IsNullOrWhiteSpace(regiao) && !Enum.TryParse(regiao, true, out RegiaoEnum regiaoEnum))
-                throw new CustomException(HttpStatusCode.BadRequest, "A região fornecida é inválida.");
+            // Determina a região com base no DDD
+            string regiaoPorDDD = _obterRegiaoPorDDD.ObtemRegiaoPorDDD(ddd);
 
+            // Consulta contatos por DDD e região determinada
+            var contatos = await _contatosRepository.ObterPorDDDRegiao(ddd, (RegiaoEnum)Enum.Parse(typeof(RegiaoEnum), regiaoPorDDD));
 
-            if (string.IsNullOrWhiteSpace(regiao))
-            {
-                var result = _contatosRepository.ObterPorDDD(ddd);
+            if (!contatos.Any())
+                throw new CustomException(HttpStatusCode.NotFound, "Contato não encontrado");
 
-                if (result == null || result.Count == 0)
-                    throw new CustomException(HttpStatusCode.NotFound, "Contato não encontrado");
-                else
-                    return result;
-            }
-            else
-            {
-                var result = _contatosRepository.ObterPorDDDRegiao(ddd, (RegiaoEnum)Enum.Parse(typeof(RegiaoEnum), regiao));
-
-                if (result == null || result.Count == 0)
-                    throw new CustomException(HttpStatusCode.NotFound, "Contato não encontrado");
-                else
-                    return result;
-            }
+            // Mapper contatos
+            return ContatoMapper.ContatosPorDDD(contatos).ToList();
         }
-
         public async Task<ContatosPostResponse> AdicionarContato(ContatosPostRequest contato)
         {
             ValidatorHelper.Validar(contato);
 
-            if (await _contatosRepository.ContatoExiste(contato))
+            if (await _contatosRepository.ContatoExistePorEmail(contato.Email))
                 throw new CustomException(HttpStatusCode.Conflict, "Contato com este email já existe.");
 
             string regiao = _obterRegiaoPorDDD.ObtemRegiaoPorDDD(contato.DDD);
@@ -96,8 +89,8 @@ namespace FiapGrupo57Fase2.Service
                 contato.Regiao = regiao;
             }
 
-            if (contato.Regiao == null)
-                contato.Regiao = contatoAux.Regiao;
+            //if (contato.Regiao == null)
+            //    contato.Regiao = contatoAux.Regiao;
 
             ContatoEntity mapper = ContatoMapper.ToEntity(contato);
 

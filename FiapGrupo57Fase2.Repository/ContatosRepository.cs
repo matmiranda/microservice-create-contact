@@ -25,10 +25,10 @@ namespace FiapGrupo57Fase2.Repository
             return await _dapperWrapper.QuerySingleAsync<int>(_dbConnection, sql, contato);
         }
 
-        public async Task<bool> ContatoExiste(ContatosPostRequest contato)
+        public async Task<bool> ContatoExistePorEmail(string email)
         {
             var sql = "SELECT 1 FROM Contatos WHERE Email = @Email";
-            return await _dapperWrapper.QueryFirstOrDefaultAsync<int>(_dbConnection, sql, new { contato.Email }) > 0;
+            return await _dapperWrapper.QueryFirstOrDefaultAsync<int>(_dbConnection, sql, new { email }) > 0;
         }
 
         public async Task<bool> ContatoExistePorId(int id)
@@ -37,23 +37,22 @@ namespace FiapGrupo57Fase2.Repository
             return await _dapperWrapper.QueryFirstOrDefaultAsync<int>(_dbConnection, sql, new { Id = id }) > 0;
         }
 
-        public async Task<ContatosGetResponse> ObterContatoPorId(int id)
+        public async Task<ContatoEntity> ObterContatoPorId(int id)
         {
             var sql = "SELECT c.Id, c.Nome, c.Telefone, c.Email, c.DDD, r.Nome AS Regiao FROM Contatos c JOIN Regioes r ON c.Regiao = r.Id WHERE c.Id = @id";
-            return await _dapperWrapper.QueryFirstOrDefaultAsync<ContatosGetResponse>(_dbConnection, sql, new { Id = id });
+            return await _dapperWrapper.QueryFirstOrDefaultAsync<ContatoEntity>(_dbConnection, sql, new { Id = id });
         }
 
-        public List<ContatosGetResponse> ObterPorDDD(int ddd)
+        public async Task<IEnumerable<ContatoEntity>> ObterPorDDD(int ddd)
         {
             var sql = "SELECT c.Id, c.Nome, c.Telefone, c.Email, c.DDD, r.Nome AS Regiao FROM Contatos c JOIN Regioes r ON c.Regiao = r.Id WHERE c.DDD = @DDD";
-            return _dapperWrapper.Query<ContatosGetResponse>(_dbConnection, sql, new { DDD = ddd }).ToList();
+            return await _dapperWrapper.QueryAsync<ContatoEntity>(_dbConnection, sql, new { DDD = ddd });
         }
 
-        public List<ContatosGetResponse> ObterPorDDDRegiao(int ddd, RegiaoEnum regiao)
+        public async Task<IEnumerable<ContatoEntity>> ObterPorDDDRegiao(int ddd, RegiaoEnum regiao)
         {
-            //var sql = "SELECT * FROM Contatos WHERE DDD = @DDD AND Regiao = @Regiao";
             var sql = @"SELECT c.Id, c.Nome, c.Telefone, c.Email, c.DDD, r.Nome AS Regiao FROM Contatos c JOIN Regioes r ON c.Regiao = r.Id WHERE c.DDD = @DDD AND c.Regiao = @Regiao";
-            return _dapperWrapper.Query<ContatosGetResponse>(_dbConnection, sql, new { DDD = ddd, Regiao = regiao }).ToList();
+            return await _dapperWrapper.QueryAsync<ContatoEntity>(_dbConnection, sql, new { DDD = ddd, Regiao = regiao });
         }
 
         public async Task Atualizar(ContatoEntity contato)
