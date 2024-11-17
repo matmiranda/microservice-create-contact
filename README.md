@@ -16,5 +16,5 @@ O projeto está organizado em seis camadas para garantir o isolamento da lógica
 ## Tecnologias Utilizadas
 - .NET Core
 - Swagger
-- Entity Framework Core
+- Dapper
 - Mysql
