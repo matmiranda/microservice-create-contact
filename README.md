@@ -14,7 +14,7 @@ O projeto está organizado em seis camadas para garantir o isolamento da lógica
 - **WebAPI**: Contém os controladores e configurações da WebAPI.
 
 ## Tecnologias Utilizadas
-- .NET Core
+- .NET Core 8
 - Swagger
 - Dapper
 - Mysql
