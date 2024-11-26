@@ -2,8 +2,6 @@
 using FiapGrupo57Fase2.Domain.Enum;
 using FiapGrupo57Fase2.Domain.Interface.Dapper;
 using FiapGrupo57Fase2.Domain.Interface.Repository;
-using FiapGrupo57Fase2.DTO.Request;
-using FiapGrupo57Fase2.DTO.Response;
 using System.Data;
 
 namespace FiapGrupo57Fase2.Repository

@@ -40,6 +40,9 @@ namespace FiapGrupo57Fase2.Service
             // Determina a região com base no DDD
             string regiaoPorDDD = _obterRegiaoPorDDD.ObtemRegiaoPorDDD(ddd);
 
+            if (regiaoPorDDD.Equals("DDD_INVALIDO"))
+                throw new CustomException(HttpStatusCode.BadRequest, $"Região não encontrada para o DDD: {ddd}");
+
             // Consulta contatos por DDD e região determinada
             var contatos = await _contatosRepository.ObterPorDDDRegiao(ddd, (RegiaoEnum)Enum.Parse(typeof(RegiaoEnum), regiaoPorDDD));
 
@@ -88,9 +91,6 @@ namespace FiapGrupo57Fase2.Service
                 }
                 contato.Regiao = regiao;
             }
-
-            //if (contato.Regiao == null)
-            //    contato.Regiao = contatoAux.Regiao;
 
             ContatoEntity mapper = ContatoMapper.ToEntity(contato);
 

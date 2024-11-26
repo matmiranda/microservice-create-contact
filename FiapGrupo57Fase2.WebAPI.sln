@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiapGrupo57Fase2.Service", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiapGrupo57Fase2.DTO", "FiapGrupo57Fase2.DTO\FiapGrupo57Fase2.DTO.csproj", "{0B1628E2-22BA-457D-A261-CAECB38E4929}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiapGrupo57Fase2.Test", "FiapGrupo57Fase2.Test\FiapGrupo57Fase2.Test.csproj", "{391C843F-B2C4-4D0E-B6EB-68E0618DA4BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{0B1628E2-22BA-457D-A261-CAECB38E4929}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B1628E2-22BA-457D-A261-CAECB38E4929}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B1628E2-22BA-457D-A261-CAECB38E4929}.Release|Any CPU.Build.0 = Release|Any CPU
+		{391C843F-B2C4-4D0E-B6EB-68E0618DA4BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{391C843F-B2C4-4D0E-B6EB-68E0618DA4BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{391C843F-B2C4-4D0E-B6EB-68E0618DA4BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{391C843F-B2C4-4D0E-B6EB-68E0618DA4BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
