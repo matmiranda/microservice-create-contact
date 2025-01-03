@@ -28,7 +28,7 @@ O projeto está organizado em seis camadas para garantir o isolamento da lógica
 3. Executar o comando PS C:\Prometheus\prometheus-3.0.1.windows-amd64> .\prometheus.exe
 4. Abrir o navegador e executar http://localhost:9090/
 
-### Prometheus
+### Grafana
 1. Baixar grafana https://dl.grafana.com/enterprise/release/grafana-enterprise-11.4.0.windows-amd64.zip
 2. Extrair na pasta C:\Grafana\grafana-v11.4.0
 3. Executar o comando PS C:\Grafana\grafana-v11.4.0\bin> .\grafana-server.exe
