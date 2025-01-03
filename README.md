@@ -20,7 +20,7 @@ O projeto está organizado em seis camadas para garantir o isolamento da lógica
 - Mysql
 
 
-## Passo a passo de como instalar prometheus e grafana
+## Como instalar prometheus e grafana
 
 ### Prometheus
 1. Baixar prometheus https://github.com/prometheus/prometheus/releases/download/v3.0.1/prometheus-3.0.1.windows-amd64.zip
