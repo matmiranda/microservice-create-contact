@@ -27,6 +27,9 @@ jobs:
     - name: Run unit tests
       run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
 
+    - name: List Test Results 
+      run: ls TestResults # Lista o conteúdo do diretório de resultados dos testes para verificação
+
     - name: Run integration tests
       run: dotnet test --filter Category=Integration --no-build --verbosity normal
 
@@ -34,7 +37,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: test-results
-        path: path/to/test-results
+        path: TestResults # Garanta que este caminho corresponda ao local onde os resultados são salvos
 
     - name: Setup Prometheus
       run: docker run -d --name prometheus -p 9090:9090 prom/prometheus
