@@ -36,7 +36,7 @@ jobs:
         ls FiapGrupo57Fase2.Test/TestResults  # Lista o conteúdo do diretório de resultados dos testes para verificação
 
     - name: Publish Test Results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4  # Atualizado para v4
       with:
         name: test-results
         path: FiapGrupo57Fase2.Test/TestResults  # Garanta que este caminho corresponda ao local onde os resultados são salvos
