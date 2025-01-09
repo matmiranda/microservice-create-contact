@@ -28,10 +28,10 @@ jobs:
       run: mkdir -p TestResults  # Cria o diretório de resultados dos testes
 
     - name: Run unit tests
-      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=TestResults/test-results.trx"
+      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=TestResults/test-results.trx"  # Salve os resultados dos testes unitários no diretório TestResults
 
     - name: Run integration tests
-      run: dotnet test --filter Category=Integration --no-build --verbosity normal --logger "trx;LogFileName=TestResults/integration-test-results.trx"
+      run: dotnet test --filter Category=Integration --no-build --verbosity normal --logger "trx;LogFileName=TestResults/integration-test-results.trx"  # Salve os resultados dos testes de integração no diretório TestResults
 
     - name: List Root Directory
       run: |
