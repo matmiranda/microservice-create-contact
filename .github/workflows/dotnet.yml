@@ -25,15 +25,15 @@ jobs:
       run: dotnet build --no-restore
 
     - name: Run unit tests
-      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=TestResults/test-results.trx"  # Salve os resultados dos testes unitários no diretório TestResults
+      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=TestResults/test-results.trx"
 
     - name: Run integration tests
-      run: dotnet test --filter Category=Integration --no-build --verbosity normal --logger "trx;LogFileName=TestResults/integration-test-results.trx"  # Salve os resultados dos testes de integração no diretório TestResults
+      run: dotnet test --filter Category=Integration --no-build --verbosity normal --logger "trx;LogFileName=TestResults/integration-test-results.trx"
 
     - name: List Test Results
       run: |
         echo "Verificando conteúdo do diretório TestResults:"
-        ls TestResults  # Lista o conteúdo do diretório de resultados dos testes para verificação
+        ls -R  # Lista o conteúdo do diretório de resultados dos testes para verificação
 
     - name: Publish Test Results
       uses: actions/upload-artifact@v3
