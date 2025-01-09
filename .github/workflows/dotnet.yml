@@ -24,17 +24,16 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
 
-    - name: Create Test Results Directory
-      run: mkdir -p TestResults  # Cria o diretório de resultados dos testes
-
     - name: Run unit tests
-      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=TestResults/test-results.trx"
+      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=TestResults/test-results.trx"  # Salve os resultados dos testes unitários no diretório TestResults
 
     - name: Run integration tests
-      run: dotnet test --filter Category=Integration --no-build --verbosity normal --logger "trx;LogFileName=TestResults/integration-test-results.trx"
+      run: dotnet test --filter Category=Integration --no-build --verbosity normal --logger "trx;LogFileName=TestResults/integration-test-results.trx"  # Salve os resultados dos testes de integração no diretório TestResults
 
     - name: List Test Results
-      run: ls TestResults  # Lista o conteúdo do diretório de resultados dos testes para verificação
+      run: |
+        echo "Verificando conteúdo do diretório TestResults:"
+        ls TestResults  # Lista o conteúdo do diretório de resultados dos testes para verificação
 
     - name: Publish Test Results
       uses: actions/upload-artifact@v3
