@@ -49,7 +49,7 @@ jobs:
       run: curl -f http://localhost:9090/metrics || exit 1 # Verifica se o Prometheus está acessível
       
     - name: Verify Grafana
-      run: curl -f http://localhost:3000 || exit 1 # Verifica se o Grafana está acessível
+      run: curl -L -f http://localhost:3000 || exit 1 # Verifica se o Grafana está acessível e -L segue redirecionamentos
 
     - name: Grafana Logs 
       if: failure()
