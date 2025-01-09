@@ -53,6 +53,6 @@ jobs:
     - name: Verify Grafana
       run: curl -L -f http://localhost:3000 || exit 1  # Verifica se o Grafana está acessível e -L segue redirecionamentos
 
-    - name: Grafana Logs 
+    - name: Grafana Error Logs 
       if: failure()
       run: docker logs grafana
