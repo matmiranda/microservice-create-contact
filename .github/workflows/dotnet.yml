@@ -41,3 +41,8 @@ jobs:
 
     - name: Setup Grafana
       run: docker run -d --name grafana -p 3000:3000 grafana/grafana
+
+    - name: Verify Prometheus 
+      run: curl -f http://localhost:9090/metrics || exit 1 # Verifica se o Prometheus está acessível
+    - name: Verify Grafana
+      run: curl -f http://localhost:3000 || exit 1 # Verifica se o Grafana está acessível
