@@ -25,22 +25,22 @@ jobs:
       run: dotnet build --no-restore
 
     - name: Create Test Results Directory
-      run: mkdir -p TestResults # Cria o diretório de resultados dos testes
+      run: mkdir -p TestResults  # Cria o diretório de resultados dos testes
 
     - name: Run unit tests
-      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
-
-    - name: List Test Results 
-      run: ls TestResults # Lista o conteúdo do diretório de resultados dos testes para verificação
+      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=TestResults/test-results.trx"
 
     - name: Run integration tests
-      run: dotnet test --filter Category=Integration --no-build --verbosity normal
+      run: dotnet test --filter Category=Integration --no-build --verbosity normal --logger "trx;LogFileName=TestResults/integration-test-results.trx"
+
+    - name: List Test Results
+      run: ls TestResults  # Lista o conteúdo do diretório de resultados dos testes para verificação
 
     - name: Publish Test Results
       uses: actions/upload-artifact@v3
       with:
         name: test-results
-        path: TestResults # Garanta que este caminho corresponda ao local onde os resultados são salvos
+        path: TestResults  # Garanta que este caminho corresponda ao local onde os resultados são salvos
 
     - name: Setup Prometheus
       run: docker run -d --name prometheus -p 9090:9090 prom/prometheus
@@ -49,13 +49,13 @@ jobs:
       run: docker run -d --name grafana -p 3000:3000 grafana/grafana
 
     - name: Wait for Grafana to start 
-      run: sleep 30 # Aguarde 30 segundos para permitir que o Grafana inicialize
+      run: sleep 30  # Aguarde 30 segundos para permitir que o Grafana inicialize
 
     - name: Verify Prometheus 
-      run: curl -f http://localhost:9090/metrics || exit 1 # Verifica se o Prometheus está acessível
+      run: curl -f http://localhost:9090/metrics || exit 1  # Verifica se o Prometheus está acessível
       
     - name: Verify Grafana
-      run: curl -L -f http://localhost:3000 || exit 1 # Verifica se o Grafana está acessível e -L segue redirecionamentos
+      run: curl -L -f http://localhost:3000 || exit 1  # Verifica se o Grafana está acessível e -L segue redirecionamentos
 
     - name: Grafana Logs 
       if: failure()
