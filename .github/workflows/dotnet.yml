@@ -25,18 +25,18 @@ jobs:
       run: dotnet build --no-restore
 
     - name: Run all tests
-      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=FiapGrupo57Fase2.Test/TestResults/all-test-results.trx"  # Executa todos os testes no projeto de testes
+      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=FiapGrupo57Fase2.Test/TestResults/all-test-results.trx"
 
     - name: List Test Results
       run: |
         echo "Verificando conteúdo do diretório TestResults:"
-        ls FiapGrupo57Fase2.Test/TestResults  # Lista o conteúdo do diretório de resultados dos testes para verificação
+        ls FiapGrupo57Fase2.Test/TestResults
 
     - name: Publish Test Results
-      uses: actions/upload-artifact@v4  # Atualizado para v4
+      uses: actions/upload-artifact@v4
       with:
         name: test-results
-        path: FiapGrupo57Fase2.Test/TestResults  # Garanta que este caminho corresponda ao local onde os resultados são salvos
+        path: FiapGrupo57Fase2.Test/TestResults
 
     - name: Setup Prometheus
       run: docker run -d --name prometheus -p 9090:9090 prom/prometheus
@@ -45,14 +45,14 @@ jobs:
       run: docker run -d --name grafana -p 3000:3000 grafana/grafana
 
     - name: Wait for Grafana to start 
-      run: sleep 30  # Aguarde 30 segundos para permitir que o Grafana inicialize
+      run: sleep 30
 
     - name: Verify Prometheus 
-      run: curl -f http://localhost:9090/metrics || exit 1  # Verifica se o Prometheus está acessível
-      
-    - name: Verify Grafana
-      run: curl -L -f http://localhost:3000 || exit 1  # Verifica se o Grafana está acessível e -L segue redirecionamentos
+      run: curl -f http://localhost:9090/metrics || exit 1
 
-    - name: Grafana Error Logs 
+    - name: Verify Grafana
+      run: curl -L -f http://localhost:3000 > /dev/null || exit 1
+
+    - name: Grafana Error Logs
       if: failure()
       run: docker logs grafana
