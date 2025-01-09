@@ -33,6 +33,11 @@ jobs:
     - name: Run integration tests
       run: dotnet test --filter Category=Integration --no-build --verbosity normal --logger "trx;LogFileName=TestResults/integration-test-results.trx"
 
+    - name: List Root Directory
+      run: |
+        echo "Verificando conteúdo do diretório raiz:"
+        ls -R  # Lista o conteúdo do diretório raiz para diagnosticar onde os arquivos estão sendo salvos
+
     - name: List Test Results
       run: |
         echo "Verificando conteúdo do diretório TestResults:"
