@@ -24,6 +24,12 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
 
+    - name: Verify Build Output
+      run: |
+        echo "Verificando conteúdo do diretório de build:"
+        ls -R **/bin/Release/
+        ls -R **/obj/Release/
+
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v3
       with:
@@ -49,6 +55,11 @@ jobs:
       with:
         name: build-artifacts
         path: .
+
+    - name: Verify Downloaded Artifacts
+      run: |
+        echo "Verificando conteúdo dos artefatos baixados:"
+        ls -R .
 
     - name: Run all tests
       run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=FiapGrupo57Fase2.Test/TestResults/all-test-results.trx"
