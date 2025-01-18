@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 8.0.x
 
@@ -33,7 +33,7 @@ jobs:
         ls FiapGrupo57Fase2.Test/TestResults
 
     - name: Publish Test Results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: test-results
         path: FiapGrupo57Fase2.Test/TestResults
@@ -48,10 +48,16 @@ jobs:
       run: sleep 30
 
     - name: Verify Prometheus 
-      run: curl -f http://localhost:9090/metrics || exit 1
+      run: |
+        echo "Verificando se Prometheus está em execução:"
+        docker ps -a
+        curl -f http://localhost:9090/metrics || exit 1
 
     - name: Verify Grafana
-      run: curl -L -f http://localhost:3000 > /dev/null || exit 1
+      run: |
+        echo "Verificando se Grafana está em execução:"
+        docker ps -a
+        curl -L -f http://localhost:3000 > /dev/null || exit 1
 
     - name: Grafana Error Logs
       if: failure()
