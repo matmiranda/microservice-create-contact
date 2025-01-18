@@ -22,21 +22,21 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --configuration Release --no-restore
 
     - name: Verify Build Output
       run: |
         echo "Verificando conteúdo do diretório de build:"
-        ls -R **/bin/Release/
-        ls -R **/obj/Release/
+        ls -R FiapGrupo57Fase2.WebAPI/bin/Release/
+        ls -R FiapGrupo57Fase2.WebAPI/obj/Release/
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v3
       with:
         name: build-artifacts
         path: |
-          **/bin/Release/
-          **/obj/Release/
+          FiapGrupo57Fase2.WebAPI/bin/Release/
+          FiapGrupo57Fase2.WebAPI/obj/Release/
 
   test:
     runs-on: ubuntu-latest
