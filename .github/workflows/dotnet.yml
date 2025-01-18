@@ -1,4 +1,4 @@
-name: .NET CI Pipeline with Docker
+name: .NET CI Pipeline
 
 on:
   push:
@@ -7,26 +7,77 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: Build and Test with Docker
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Verify Build Output
       run: |
-        docker build -t myapp:latest .
-        docker run --rm myapp:latest
+        echo "Verificando conteúdo do diretório de build:"
+        ls -R FiapGrupo57Fase2.WebAPI/bin/Release/
+        ls -R FiapGrupo57Fase2.WebAPI/obj/Release/
+
+    - name: Publish Build Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: |
+          FiapGrupo57Fase2.WebAPI/bin/Release/
+          FiapGrupo57Fase2.WebAPI/obj/Release/
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifacts
+        path: .
+
+    - name: Verify Downloaded Artifacts
+      run: |
+        echo "Verificando conteúdo dos artefatos baixados:"
+        ls -R .
+
+    - name: Run all tests
+      run: dotnet test FiapGrupo57Fase2.Test/FiapGrupo57Fase2.Test.csproj --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=FiapGrupo57Fase2.Test/TestResults/all-test-results.trx"
+
+    - name: List Test Results
+      run: |
+        echo "Verificando conteúdo do diretório TestResults:"
+        ls FiapGrupo57Fase2.Test/TestResults
 
     - name: Publish Test Results
       uses: actions/upload-artifact@v3
       with:
         name: test-results
-        path: TestResults
+        path: FiapGrupo57Fase2.Test/TestResults
 
   setup-monitoring:
     runs-on: ubuntu-latest
-    needs: build-and-test
+    needs: test
 
     steps:
     - name: Setup Prometheus
