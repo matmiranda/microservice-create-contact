@@ -7,63 +7,52 @@ on:
     branches: [ "main" ]
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-
   build:
     runs-on: ubuntu-latest
-    needs: setup
+
     steps:
-      - name: Restore dependencies
-        run: dotnet restore
+    - uses: actions/checkout@v4
 
-      - name: Build
-        run: dotnet build --no-restore
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
 
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Run all tests
-        run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=FiapGrupo57Fase2.Test/TestResults/all-test-results.trx"
+    - name: Restore dependencies
+      run: dotnet restore
 
-      - name: List Test Results
-        run: |
-          echo "Verificando conteúdo do diretório TestResults:"
-          ls FiapGrupo57Fase2.Test/TestResults
+    - name: Build
+      run: dotnet build --no-restore
 
-      - name: Publish Test Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: FiapGrupo57Fase2.Test/TestResults
+    - name: Run all tests
+      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=FiapGrupo57Fase2.Test/TestResults/all-test-results.trx"
 
-  setup-monitoring:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Setup Prometheus
-        run: docker run -d --name prometheus -p 9090:9090 prom/prometheus
+    - name: List Test Results
+      run: |
+        echo "Verificando conteúdo do diretório TestResults:"
+        ls FiapGrupo57Fase2.Test/TestResults
 
-      - name: Setup Grafana
-        run: docker run -d --name grafana -p 3000:3000 grafana/grafana
+    - name: Publish Test Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: FiapGrupo57Fase2.Test/TestResults
 
-      - name: Wait for Grafana to start 
-        run: sleep 30
+    - name: Setup Prometheus
+      run: docker run -d --name prometheus -p 9090:9090 prom/prometheus
 
-      - name: Verify Prometheus 
-        run: curl -f http://localhost:9090/metrics || exit 1
+    - name: Setup Grafana
+      run: docker run -d --name grafana -p 3000:3000 grafana/grafana
 
-      - name: Verify Grafana
-        run: curl -L -f http://localhost:3000 > /dev/null || exit 1
+    - name: Wait for Grafana to start 
+      run: sleep 30
 
-      - name: Grafana Error Logs
-        if: failure()
-        run: docker logs grafana
+    - name: Verify Prometheus 
+      run: curl -f http://localhost:9090/metrics || exit 1
+
+    - name: Verify Grafana
+      run: curl -L -f http://localhost:3000 > /dev/null || exit 1
+
+    - name: Grafana Error Logs
+      if: failure()
+      run: docker logs grafana
