@@ -45,7 +45,17 @@ jobs:
       run: docker run -d --name grafana -p 3000:3000 grafana/grafana
 
     - name: Wait for Grafana to start 
-      run: sleep 30
+      run: |
+        for i in {1..10}; do
+          if curl -L -f http://localhost:3000 > /dev/null; then
+            echo "Grafana started"
+            exit 0
+          fi
+          echo "Waiting for Grafana..."
+          sleep 3
+        done
+        echo "Grafana failed to start"
+        exit 1
 
     - name: Verify Prometheus 
       run: curl -f http://localhost:9090/metrics || exit 1
