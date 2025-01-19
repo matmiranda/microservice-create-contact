@@ -154,19 +154,17 @@ class Program
 
 ## Explicação do Código
 
-### Geração de Contatos Aleatórios
+### Criação de Contatos
 Utilizamos a biblioteca Bogus para gerar dados fictícios de contatos de forma variada e realista. Isso nos permite simular diferentes cenários de uso da API.
-
-#### Criação de Contatos
 O código gera 50 contatos aleatórios e os adiciona na API. Cada contato é serializado em JSON e enviado em uma requisição POST. As respostas são verificadas e os IDs dos contatos adicionados são armazenados.
 
-#### Atualização de Contatos
+### Atualização de Contatos
 Após adicionar os contatos, o código faz requisições PUT para atualizar cada um dos contatos adicionados, adicionando "Atualizado" ao nome de cada contato.
 
-#### Consulta de Contatos
+### Consulta de Contatos
 O código faz requisições GET para consultar contatos pelo DDD, utilizando os DDDs dos contatos armazenados na lista.
 
-#### Exclusão de Contatos
+### Exclusão de Contatos
 Após consultar os contatos, o código faz requisições DELETE para excluir cada um dos contatos adicionados, utilizando os IDs armazenados anteriormente.
 
 ## Monitoramento com Prometheus e Grafana
