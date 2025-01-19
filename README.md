@@ -168,3 +168,9 @@ O código faz requisições GET para consultar contatos pelo DDD, utilizando os 
 
 ### Exclusão de Contatos
 Após consultar os contatos, o código faz requisições DELETE para excluir cada um dos contatos adicionados, utilizando os IDs armazenados anteriormente.
+
+## Monitoramento com Prometheus e Grafana
+Este projeto foi criado para demonstrar como o Prometheus e o Grafana podem ser usados para monitorar uma API. O Prometheus coleta métricas da API, enquanto o Grafana é usado para visualizar essas métricas em dashboards. Isso é útil para garantir que a API está funcionando corretamente e para identificar possíveis problemas de desempenho.
+
+## Conclusão
+Este projeto demonstra como criar, atualizar, consultar e excluir contatos em uma API desenvolvida em .NET 8, além de mostrar como monitorar a API usando Prometheus e Grafana. Isso é útil para garantir que a API está funcionando corretamente e para identificar possíveis problemas de desempenho.
