@@ -178,7 +178,11 @@ Este projeto utiliza GitHub Actions para automatizar o processo de integração 
 ### Explicação do Workflow
 - Build: Este job é executado em cada push ou pull request para a branch main. Ele configura o .NET, restaura as dependências, compila o projeto e publica os artefatos de build.
 - Test: Este job depende do job de build. Ele baixa os artefatos de build, executa todos os testes e publica os resultados dos testes.
-- Setup Monitoring: Este job depende do job de teste. Ele configura o Prometheus e o Grafana usando contêineres Docker, verifica se ambos estão funcionando corretamente e exibe logs de erro do Grafana em caso de falha.
+- Setup Monitoring: Configura o Prometheus e o Grafana usando contêineres Docker, verifica se ambos estão funcionando corretamente e exibe logs de erro do Grafana em caso de falha.
 
 ## Conclusão
 Este projeto demonstra como criar, atualizar, consultar e excluir contatos em uma API desenvolvida em .NET 8, além de mostrar como monitorar a API usando Prometheus e Grafana. Isso é útil para garantir que a API está funcionando corretamente e para identificar possíveis problemas de desempenho.
+
+Além disso, utilizamos o GitHub Actions para automatizar o processo de integração contínua (CI) e configuração de monitoramento. O workflow do GitHub Actions inclui etapas para compilar o projeto, executar testes e configurar Prometheus e Grafana em contêineres Docker. Isso garante que o código seja continuamente integrado e testado, e que o monitoramento esteja sempre configurado e funcionando corretamente.
+
+Com essa abordagem, conseguimos manter a qualidade do código, detectar problemas rapidamente e garantir que a API esteja sempre monitorada e funcionando de forma eficiente.
