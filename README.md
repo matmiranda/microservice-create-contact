@@ -1,7 +1,9 @@
 # FiapGrupo57Fase2
 
 ## Descrição
-Este projeto é uma aplicação WebAPI desenvolvida pelo grupo 57 da FIAP. O objetivo é implementar uma arquitetura robusta e escalável, seguindo as melhores práticas de desenvolvimento de software.
+Este projeto é uma aplicação WebAPI desenvolvida pelo grupo 57 da FIAP. Nosso objetivo é implementar uma arquitetura robusta e escalável, seguindo as melhores práticas de desenvolvimento de software.
+
+Além disso, este projeto foi criado para demonstrar o uso de Prometheus e Grafana para o monitoramento de uma API desenvolvida em .NET 8. Incluímos um aplicativo de console que realiza operações de criação, atualização, consulta e exclusão de contatos na API, permitindo uma análise detalhada do desempenho e da integridade do sistema.
 
 ## Estrutura do Projeto
 O projeto está organizado em seis camadas para garantir o isolamento da lógica de domínio, desacoplamento e flexibilidade de adaptação. As principais camadas incluem:
@@ -18,7 +20,7 @@ O projeto está organizado em seis camadas para garantir o isolamento da lógica
 - Swagger
 - Dapper
 - Mysql
-
+- Test Nunit
 
 ## Como instalar prometheus e grafana
 
@@ -34,6 +36,135 @@ O projeto está organizado em seis camadas para garantir o isolamento da lógica
 3. Executar o comando PS C:\Grafana\grafana-v11.4.0\bin> .\grafana-server.exe
 4. Abrir o navegador e executar http://localhost:3000/login
 
-### Windows Exporter
-1. Baixar promethues windows exporter https://github.com/prometheus-community/windows_exporter/releases/download/v0.30.0-rc.2/windows_exporter-0.30.0-rc.2-amd64.exe
-2. Gravar na pasta C:\Prometheus\windows_exporter\windows_exporter-0.30.0-rc.2-amd64.exe
+## Testes do monitoramento com Prometheus e Grafana
+
+### Console Teste - Program.cs
+
+```C#
+using Bogus;
+using ConsoleTeste;
+using System.Text;
+using System.Text.Json;
+
+class Program
+{
+    private static readonly List<int> PostContatos = new List<int>();
+    private static readonly List<ContatosGetResponse> Getcontatos = new List<ContatosGetResponse>();
+    private static readonly string url = "http://localhost:7040/Contatos";
+
+    static async Task Main(string[] args)
+    {
+        var client = new HttpClient();
+
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        //Cria contatos
+        for (int i = 0; i < 50; i++)
+        {
+            var contato = GerarContatoAleatorio();
+            var json = JsonSerializer.Serialize(contato);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(url, content);
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var decodedResponseBody = System.Text.RegularExpressions.Regex.Unescape(responseBody);
+            Console.WriteLine($"Response POST Contato {i + 1}: {(int)response.StatusCode} {response.ReasonPhrase} {decodedResponseBody}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var contatoResponse = JsonSerializer.Deserialize<ContatosPostResponse>(responseBody, options);
+                PostContatos.Add(contatoResponse.Id);
+            }
+        }
+
+        // Obtém contatos pelo ID
+        foreach (var id in PostContatos)
+        {
+            var response = await client.GetAsync($"{url}/{id}");
+            var responseBodyBytes = await response.Content.ReadAsByteArrayAsync();
+            var responseBody = Encoding.UTF8.GetString(responseBodyBytes);
+            Console.WriteLine($"Response GET ID {id}: {(int)response.StatusCode} {response.ReasonPhrase} {responseBody}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var contatoResponse = JsonSerializer.Deserialize<ContatosGetResponse>(responseBody, options);
+                Getcontatos.Add(contatoResponse);
+            }
+        }
+
+        // Obtém contatos pelo DDD
+        foreach (var contato in Getcontatos)
+        {
+            var response = await client.GetAsync($"{url}/?ddd={contato.DDD}");
+            var responseBodyBytes = await response.Content.ReadAsByteArrayAsync();
+            var responseBody = Encoding.UTF8.GetString(responseBodyBytes);
+            Console.WriteLine($"Response GET DDD {contato.DDD}: {(int)response.StatusCode} {response.ReasonPhrase} {responseBody}");
+        }
+
+        //Atualiza contatos
+        foreach (var contato in Getcontatos)
+        {
+            var contatoAtualizado = new ContatosPutRequest
+            {
+                Id = contato.Id,
+                Nome = contato.Nome + " Atualizado",
+                Telefone = contato.Telefone,
+                Email = contato.Email,
+                DDD = contato.DDD,
+                Regiao = contato.Regiao
+            };
+
+            var json = JsonSerializer.Serialize(contatoAtualizado);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PutAsync(url, content);
+            var responseBodyBytes = await response.Content.ReadAsByteArrayAsync();
+            var responseBody = Encoding.UTF8.GetString(responseBodyBytes);
+            Console.WriteLine($"Response PUT ID {contato.Id}: {(int)response.StatusCode} {response.ReasonPhrase} {responseBody}");
+        }
+
+        // Exclui contatos
+        Console.WriteLine("Aguardando 30 segundos...");
+        await Task.Delay(30000); // 30000 milissegundos = 30 segundos
+        Console.WriteLine("30 segundos se passaram.");
+        foreach (var contato in Getcontatos)
+        {
+            var response = await client.DeleteAsync($"{url}/{contato.Id}");
+            var responseBodyBytes = await response.Content.ReadAsByteArrayAsync();
+            var responseBody = Encoding.UTF8.GetString(responseBodyBytes);
+            Console.WriteLine($"Response DELETE ID {contato.Id}: {(int)response.StatusCode} {response.ReasonPhrase} {responseBody}");
+        }
+
+    }
+
+    static ContatosPostRequest GerarContatoAleatorio()
+    {
+        var faker = new Faker<ContatosPostRequest>()
+            .RuleFor(c => c.Nome, f => f.Name.FullName())
+            .RuleFor(c => c.Telefone, f => f.Phone.PhoneNumber("#########"))
+            .RuleFor(c => c.Email, f => f.Internet.Email())
+            .RuleFor(c => c.DDD, f => f.Random.Int(1, 99));
+
+        return faker.Generate();
+    }
+}
+
+```
+
+## Explicação do Código
+
+### Geração de Contatos Aleatórios
+Utilizamos a biblioteca Bogus para gerar dados fictícios de contatos de forma variada e realista. Isso nos permite simular diferentes cenários de uso da API.
+
+### Criação de Contatos
+O código gera 50 contatos aleatórios e os adiciona na API. Cada contato é serializado em JSON e enviado em uma requisição POST. As respostas são verificadas e os IDs dos contatos adicionados são armazenados.
+
+### Atualização de Contatos
+Após adicionar os contatos, o código faz requisições PUT para atualizar cada um dos contatos adicionados, adicionando "Atualizado" ao nome de cada contato.
+
+### Consulta de Contatos
+O código faz requisições GET para consultar contatos pelo DDD, utilizando os DDDs dos contatos armazenados na lista.
+
+### Exclusão de Contatos
+Após consultar os contatos, o código faz requisições DELETE para excluir cada um dos contatos adicionados, utilizando os IDs armazenados anteriormente.
