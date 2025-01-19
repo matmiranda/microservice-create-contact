@@ -1,7 +1,3 @@
-//using FiapGrupo57Fase2.Domain.Dapper;
-//using FiapGrupo57Fase2.Domain.Model;
-//using FiapGrupo57Fase2.Domain.Repository;
-//using FiapGrupo57Fase2.Domain.Service;
 using FiapGrupo57Fase2.Domain.Interface;
 using FiapGrupo57Fase2.Domain.Interface.Dapper;
 using FiapGrupo57Fase2.Domain.Interface.Repository;
@@ -14,8 +10,12 @@ using FiapGrupo57Fase2.WebAPI.Configuration;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
 using System.Data;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//// Adicionar serviços ao contêiner
+//builder.Services.AddControllersWithViews();
 
 // Adicionar serviços e repositórios
 builder.Services.AddTransient<IDbConnection>((sp) =>
@@ -47,6 +47,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Adicionar middleware do Prometheus
+app.UseMetricServer();
+app.UseHttpMetrics();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
