@@ -14,9 +14,6 @@ using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//// Adicionar serviços ao contêiner
-//builder.Services.AddControllersWithViews();
-
 // Adicionar serviços e repositórios
 builder.Services.AddTransient<IDbConnection>((sp) =>
     new MySqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
