@@ -29,8 +29,8 @@ jobs:
       with:
         name: build-artifacts
         path: |
-          FiapGrupo57Fase2.Test/bin/Debug/net8.0/
-          FiapGrupo57Fase2.WebAPI/bin/Debug/net8.0/
+          FiapGrupo42Fase3.Test/bin/Debug/net8.0/
+          FiapGrupo42Fase3.WebAPI/bin/Debug/net8.0/
 
   test:
     runs-on: ubuntu-latest
@@ -51,18 +51,18 @@ jobs:
         path: .
 
     - name: Run all tests
-      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=FiapGrupo57Fase2.Test/TestResults/all-test-results.trx"
+      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=FiapGrupo42Fase3.Test/TestResults/all-test-results.trx"
 
     - name: List Test Results
       run: |
         echo "Verificando conteúdo do diretório TestResults:"
-        ls FiapGrupo57Fase2.Test/TestResults
+        ls FiapGrupo42Fase3.Test/TestResults
 
     - name: Publish Test Results
       uses: actions/upload-artifact@v4
       with:
         name: test-results
-        path: FiapGrupo57Fase2.Test/TestResults
+        path: FiapGrupo42Fase3.Test/TestResults
 
   setup-monitoring:
     runs-on: ubuntu-latest
