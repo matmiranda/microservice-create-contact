@@ -5,7 +5,7 @@
 Link do vídeo: em andamento
 
 ## Descrição
-Este projeto é uma aplicação WebAPI desenvolvida pelo grupo 57 da FIAP. Nosso objetivo é implementar uma arquitetura robusta e escalável, seguindo as melhores práticas de desenvolvimento de software.
+Este projeto é uma aplicação WebAPI desenvolvida pelo grupo 42 da FIAP. Nosso objetivo é implementar uma arquitetura robusta e escalável, seguindo as melhores práticas de desenvolvimento de software.
 
 Além disso, este projeto foi criado para demonstrar o uso de Prometheus e Grafana para o monitoramento de uma API desenvolvida em .NET 8. Incluímos um aplicativo de console que realiza operações de criação, atualização, consulta e exclusão de contatos na API, permitindo uma análise detalhada do desempenho e da integridade do sistema.
 
