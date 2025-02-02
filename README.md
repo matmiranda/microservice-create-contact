@@ -2,7 +2,7 @@
 
 ## Apresentação
 
-Link do vídeo: https://www.youtube.com/watch?v=-kXW7Ow-Sr4
+Link do vídeo: em andamento
 
 ## Descrição
 Este projeto é uma aplicação WebAPI desenvolvida pelo grupo 57 da FIAP. Nosso objetivo é implementar uma arquitetura robusta e escalável, seguindo as melhores práticas de desenvolvimento de software.
