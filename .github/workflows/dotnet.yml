@@ -29,8 +29,8 @@ jobs:
       with:
         name: build-artifacts
         path: |
-          FiapGrupo42Fase3.Test/bin/Debug/net8.0/
-          FiapGrupo42Fase3.WebAPI/bin/Debug/net8.0/
+          ContactAPI/FiapGrupo42Fase3.Test/bin/Debug/net8.0/
+          ContactAPI/FiapGrupo42Fase3.WebAPI/bin/Debug/net8.0/
 
   test:
     runs-on: ubuntu-latest
