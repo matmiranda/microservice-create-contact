@@ -52,7 +52,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-artifacts
-        path: .
+        path: ContactAPI/
 
     - name: Run all tests
       run: dotnet test ContactAPI/FiapGrupo42Fase3.WebAPI.sln --no-build --verbosity normal --logger "trx;LogFileName=ContactAPI/FiapGrupo42Fase3.Test/TestResults/all-test-results.trx"
