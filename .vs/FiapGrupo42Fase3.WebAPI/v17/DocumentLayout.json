@@ -1,0 +1,45 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\matmi\\OneDrive\\Documentos\\github\\FiapGrupo42Fase3\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{33745885-CC8E-4105-8235-8D098455CC72}|FiapGrupo42Fase3.WebAPI\\FiapGrupo42Fase3.WebAPI.csproj|c:\\users\\matmi\\onedrive\\documentos\\github\\fiapgrupo42fase3\\fiapgrupo42fase3.webapi\\controllers\\contatoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{33745885-CC8E-4105-8235-8D098455CC72}|FiapGrupo42Fase3.WebAPI\\FiapGrupo42Fase3.WebAPI.csproj|solutionrelative:fiapgrupo42fase3.webapi\\controllers\\contatoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{bdada759-5db7-402f-96e3-402b17c8c5b4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ContatosController.cs",
+              "DocumentMoniker": "C:\\Users\\matmi\\OneDrive\\Documentos\\github\\FiapGrupo42Fase3\\FiapGrupo42Fase3.WebAPI\\Controllers\\ContatosController.cs",
+              "RelativeDocumentMoniker": "FiapGrupo42Fase3.WebAPI\\Controllers\\ContatosController.cs",
+              "ToolTip": "C:\\Users\\matmi\\OneDrive\\Documentos\\github\\FiapGrupo42Fase3\\FiapGrupo42Fase3.WebAPI\\Controllers\\ContatosController.cs",
+              "RelativeToolTip": "FiapGrupo42Fase3.WebAPI\\Controllers\\ContatosController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-04T00:14:25.596Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
