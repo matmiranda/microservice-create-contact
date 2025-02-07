@@ -61,13 +61,13 @@ jobs:
     - name: List Test Results
       run: |
         echo "Verificando conteúdo do diretório TestResults:"
-        ls FiapGrupo42Fase3.Test/TestResults
+        ls ContactAPI/FiapGrupo42Fase3.Test/TestResults
 
     - name: Publish Test Results
       uses: actions/upload-artifact@v4
       with:
         name: test-results
-        path: FiapGrupo42Fase3.Test/TestResults
+        path: ContactAPI/FiapGrupo42Fase3.Test/TestResults
 
   setup-monitoring:
     runs-on: ubuntu-latest
