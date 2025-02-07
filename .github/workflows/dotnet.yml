@@ -19,10 +19,10 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ContactAPI/FiapGrupo42Fase3.WebAPI.sln
 
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build ContactAPI/FiapGrupo42Fase3.WebAPI.sln --no-restore
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v4
@@ -51,7 +51,8 @@ jobs:
         path: .
 
     - name: Run all tests
-      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=FiapGrupo42Fase3.Test/TestResults/all-test-results.trx"
+      run: dotnet test ContactAPI/FiapGrupo42Fase3.WebAPI.sln --no-build --verbosity normal --logger "trx;LogFileName=ContactAPI/FiapGrupo42Fase3.Test/TestResults/all-test-results.trx"
+
 
     - name: List Test Results
       run: |
