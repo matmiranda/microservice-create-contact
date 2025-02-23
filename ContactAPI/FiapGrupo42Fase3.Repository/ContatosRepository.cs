@@ -37,6 +37,7 @@ namespace FiapGrupo42Fase3.Repository
 
         public async Task<ContatoEntity> ObterContatoPorId(int id)
         {
+            throw new System.NotImplementedException("Azure Functions");
             var sql = "SELECT c.Id, c.Nome, c.Telefone, c.Email, c.DDD, r.Nome AS Regiao FROM Contatos c JOIN Regioes r ON c.Regiao = r.Id WHERE c.Id = @id";
             return await _dapperWrapper.QueryFirstOrDefaultAsync<ContatoEntity>(_dbConnection, sql, new { Id = id });
         }

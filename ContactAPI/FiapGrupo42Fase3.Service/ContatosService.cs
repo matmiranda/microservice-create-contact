@@ -1,8 +1,11 @@
-﻿using FiapGrupo42Fase3.Domain.Entity;
+﻿using FiapGrupo42Fase3.Domain;
+using FiapGrupo42Fase3.Domain.Constant;
+using FiapGrupo42Fase3.Domain.Entity;
 using FiapGrupo42Fase3.Domain.Enum;
 using FiapGrupo42Fase3.Domain.Interface;
 using FiapGrupo42Fase3.Domain.Interface.Repository;
 using FiapGrupo42Fase3.Domain.Interface.Service;
+using FiapGrupo42Fase3.Domain.Message;
 using FiapGrupo42Fase3.DTO.Request;
 using FiapGrupo42Fase3.DTO.Response;
 using FiapGrupo42Fase3.Infrastructure.Exception;
@@ -15,11 +18,12 @@ namespace FiapGrupo42Fase3.Service
     public class ContatosService : IContatosService
     {
         private readonly IContatosRepository _contatosRepository;
+        private readonly IRabbitMQProducer _rabbitMQProducer;
         private readonly IObterRegiaoPorDDD _obterRegiaoPorDDD;
 
-        public ContatosService(IContatosRepository contatosRepository, IObterRegiaoPorDDD obterRegiaoPorDDD)
+        public ContatosService(IRabbitMQProducer rabbitMQProducer, IObterRegiaoPorDDD obterRegiaoPorDDD)
         {
-            _contatosRepository = contatosRepository;
+            _rabbitMQProducer = rabbitMQProducer;
             _obterRegiaoPorDDD = obterRegiaoPorDDD;
         }
 
@@ -43,8 +47,11 @@ namespace FiapGrupo42Fase3.Service
             if (regiaoPorDDD.Equals("DDD_INVALIDO"))
                 throw new CustomException(HttpStatusCode.BadRequest, $"Região não encontrada para o DDD: {ddd}");
 
-            // Consulta contatos por DDD e região determinada
-            var contatos = await _contatosRepository.ObterPorDDDRegiao(ddd, (RegiaoEnum)Enum.Parse(typeof(RegiaoEnum), regiaoPorDDD));
+            //// Consulta contatos por DDD e região determinada
+            //var contatos = await _contatosRepository.ObterPorDDDRegiao(ddd, (RegiaoEnum)Enum.Parse(typeof(RegiaoEnum), regiaoPorDDD));
+            //criar método para consultar no Azure Functions
+            IEnumerable<ContatoEntity> contatos = Enumerable.Empty<ContatoEntity>();
+            throw new NotImplementedException("ObterPorDDDRegiao - Azure Functions");
 
             if (!contatos.Any())
                 throw new CustomException(HttpStatusCode.NotFound, "Contato não encontrado");
@@ -56,8 +63,10 @@ namespace FiapGrupo42Fase3.Service
         {
             ValidatorHelper.Validar(contato);
 
-            if (await _contatosRepository.ContatoExistePorEmail(contato.Email))
-                throw new CustomException(HttpStatusCode.Conflict, "Contato com este email já existe.");
+            //if (await _contatosRepository.ContatoExistePorEmail(contato.Email))
+            //    throw new CustomException(HttpStatusCode.Conflict, "Contato com este email já existe.");
+            //criar método para consultar no Azure Functions
+            throw new NotImplementedException("ContatoExistePorEmail - Azure Functions");
 
             string regiao = _obterRegiaoPorDDD.ObtemRegiaoPorDDD(contato.DDD);
 
@@ -80,7 +89,11 @@ namespace FiapGrupo42Fase3.Service
 
             await ValidaIdContato(contato.Id);
 
-            var contatoAux = await _contatosRepository.ObterContatoPorId(contato.Id);
+            //var contatoAux = await _contatosRepository.ObterContatoPorId(contato.Id);
+            //criar método para consultar no Azure Functions
+            ContatoEntity? contatoAux = null;
+            throw new NotImplementedException("ObterContatoPorId - Azure Functions");
+
 
             if (contatoAux.DDD != contato.DDD)
             {
@@ -99,15 +112,27 @@ namespace FiapGrupo42Fase3.Service
         public async Task ExcluirContato(int id)
         {
             await ValidaIdContato(id);
-            await _contatosRepository.Excluir(id);
+
+            var message = new ContatoMessageMQ
+            {        
+                Action = AcaoContatoConstant.Delete,
+                Source = "API.ContatosService.ExcluirContato",
+                Contato = new ContatoEntity { Id = id }
+            };
+
+            await _rabbitMQProducer.SendMessageAsync(message);
+            //await _contatosRepository.Excluir(id);
         }
 
         private async Task ValidaIdContato(int id)
         {
             if (id == 0)
                 throw new CustomException(HttpStatusCode.BadRequest, "O id deve ser maior que zero.");
-            if (!await _contatosRepository.ContatoExistePorId(id))
-                throw new CustomException(HttpStatusCode.NotFound, $"O id do contato não existe.");
+
+            //no código abaixo, precisamos criar o método para consultar no Azure Function
+            //if (!await _contatosRepository.ContatoExistePorId(id))
+            //    throw new CustomException(HttpStatusCode.NotFound, $"O id do contato não existe.");
+            throw new NotImplementedException("ContatoExistePorId - Azure Functions");
         }
     }
 }
