@@ -116,7 +116,6 @@ namespace FiapGrupo42Fase3.Service
             var message = new ContatoMessageMQ
             {        
                 Action = AcaoContatoConstant.Delete,
-                Source = "API.ContatosService.ExcluirContato",
                 Contato = new ContatoEntity { Id = id }
             };
 

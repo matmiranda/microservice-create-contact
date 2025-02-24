@@ -12,13 +12,29 @@ using Prometheus;
 using FiapGrupo42Fase3.DTO.Configuration;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Adicionar RabbitMQ como conexão persistente
+// Configuração do MassTransit - RabbitMQSettings
 builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQ"));
-builder.Services.AddSingleton<IRabbitMQProducer, RabbitMQProducer>();
 
+// Configuração do MassTransit
+builder.Services.AddMassTransit(config =>
+{
+    config.UsingRabbitMq((context, cfg) =>
+    {
+        var rabbitMQSettings = context.GetRequiredService<IOptions<RabbitMQSettings>>().Value;
+
+        cfg.Host(new Uri(rabbitMQSettings.Host), h =>
+        {
+            h.Username(rabbitMQSettings.Username);
+            h.Password(rabbitMQSettings.Password);
+        });
+    });
+});
+
+builder.Services.AddTransient<IRabbitMQProducer, RabbitMQProducer>();
 
 // Adicionar serviços e repositórios
 builder.Services.AddScoped<IObterRegiaoPorDDD, ObterRegiaoPorDDD>();
@@ -34,10 +50,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerConfiguration();
 
 var app = builder.Build();
-
-// Inicializa o RabbitMQProducer
-var rabbitMQProducer = app.Services.GetRequiredService<IRabbitMQProducer>();
-await rabbitMQProducer.InitializeAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

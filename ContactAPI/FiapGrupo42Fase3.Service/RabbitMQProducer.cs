@@ -1,62 +1,43 @@
 ﻿using FiapGrupo42Fase3.Domain.Interface.Service;
 using FiapGrupo42Fase3.DTO.Configuration;
+using MassTransit;
 using Microsoft.Extensions.Options;
-using RabbitMQ.Client;
-using System.Text;
-using System.Text.Json;
 
-public class RabbitMQProducer : IRabbitMQProducer, IDisposable
+public class RabbitMQProducer : IRabbitMQProducer, IDisposable, IAsyncDisposable
 {
     private readonly RabbitMQSettings _rabbitMQSettings;
-    private IConnection? _connection;
-    private IChannel? _channel;
-    private readonly JsonSerializerOptions _jsonSerializerOptions;
+    private readonly IBusControl _busControl;
 
     public RabbitMQProducer(IOptions<RabbitMQSettings> rabbitMQSettings)
     {
-        _rabbitMQSettings = rabbitMQSettings.Value;
-        _jsonSerializerOptions = new JsonSerializerOptions
+        _rabbitMQSettings = rabbitMQSettings.Value ?? throw new ArgumentNullException(nameof(rabbitMQSettings));
+
+        // Configuração do MassTransit
+        _busControl = Bus.Factory.CreateUsingRabbitMq(cfg =>
         {
-            WriteIndented = true
-        };
+            cfg.Host(new Uri(_rabbitMQSettings.Host), h =>
+            {
+                h.Username(_rabbitMQSettings.Username);
+                h.Password(_rabbitMQSettings.Password);
+            });
+        });
+
+        // Inicia o bus
+        _busControl.Start();
     }
 
-    public async Task InitializeAsync()
+    public async Task SendMessageAsync<T>(T message) where T : class
     {
-        var factory = new ConnectionFactory()
+        if (_busControl == null)
         {
-            HostName = _rabbitMQSettings.Host,
-            UserName = _rabbitMQSettings.Username,
-            Password = _rabbitMQSettings.Password
-        };
-
-        _connection = await factory.CreateConnectionAsync();
-        _channel = await _connection.CreateChannelAsync();
-
-        await _channel.QueueDeclareAsync(
-            queue: _rabbitMQSettings.QueueName,
-            durable: true,
-            exclusive: false,
-            autoDelete: false
-        );
-    }
-
-    public async Task SendMessageAsync<T>(T message)
-    {
-        if (_channel == null)
-        {
-            throw new InvalidOperationException("O canal não foi inicializado.");
+            throw new InvalidOperationException("O bus do MassTransit não foi inicializado.");
         }
 
         try
         {
-            var messageBody = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message, _jsonSerializerOptions));
-
-            await _channel.BasicPublishAsync(
-                exchange: "",
-                routingKey: _rabbitMQSettings.QueueName,
-                body: messageBody
-            );
+            // Publica a mensagem no RabbitMQ
+            var endpoint = await _busControl.GetSendEndpoint(new Uri($"queue:{_rabbitMQSettings.QueueName}"));
+            await endpoint.Send(message);
         }
         catch (Exception ex)
         {
@@ -65,25 +46,18 @@ public class RabbitMQProducer : IRabbitMQProducer, IDisposable
         }
     }
 
-    public async ValueTask DisposeAsync()
+    public void Dispose()
     {
-        if (_channel != null)
-        {
-            await _channel.CloseAsync();
-        }
-
-        if (_connection != null)
-        {
-            await _connection.CloseAsync();
-        }
-
+        _busControl?.Stop();
         GC.SuppressFinalize(this);
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        _channel?.CloseAsync().GetAwaiter().GetResult();
-        _connection?.CloseAsync().GetAwaiter().GetResult();
+        if (_busControl != null)
+        {
+            await _busControl.StopAsync();
+        }
         GC.SuppressFinalize(this);
     }
 }
