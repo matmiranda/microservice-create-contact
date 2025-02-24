@@ -2,7 +2,6 @@
 {
     public interface IRabbitMQProducer : IAsyncDisposable
     {
-        Task InitializeAsync();
-        Task SendMessageAsync<T>(T message);
+        Task SendMessageAsync<T>(T message) where T : class;
     }
 }
