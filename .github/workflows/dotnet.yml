@@ -61,7 +61,7 @@ jobs:
       run: mkdir -p CriarContatos.Test/TestResults
 
     - name: Run all tests
-      run: dotnet test Producer/CreateContact/CriarContatos.Test/CriarContatos.Test.csproj --configuration Release --verbosity quiet --no-restore --logger "trx;LogFileName=TestResults/all-test-results.trx"
+      run: dotnet test Producer/CreateContact/CriarContatos.Test/CriarContatos.Test.csproj --configuration Release --verbosity quiet --logger "trx;LogFileName=TestResults/all-test-results.trx"
 
     - name: List Test Results
       run: |
