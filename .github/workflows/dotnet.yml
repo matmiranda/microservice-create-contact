@@ -58,7 +58,7 @@ jobs:
         path: .
 
     - name: List Build Artifacts
-      run: ls -R Producer/CreateContact/CriarContatos.Test/bin/Release/net8.0/
+      run: ls -R .
 
     - name: Create TestResults directory
       run: mkdir -p CriarContatos.Test/TestResults
