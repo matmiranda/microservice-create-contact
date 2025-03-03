@@ -23,10 +23,10 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Restore dependencies
-      run: dotnet restore CreateContact/FiapGrupo42Fase3.WebAPI.sln
+      run: dotnet restore CreateContact/CriarContatos.Api.sln
 
     - name: Build
-      run: dotnet build CreateContact/FiapGrupo42Fase3.WebAPI.sln --no-restore
+      run: dotnet build CreateContact/CriarContatos.Api.sln --no-restore
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v4
