@@ -23,22 +23,19 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Restore dependencies
-      run: dotnet restore Producer/CreateContactMicroservice/CriarContatos.Api.sln
+      run: dotnet restore CreateContactMicroservice/CriarContatos.Api.sln
 
     - name: Clean build directories
-      run: dotnet clean Producer/CreateContactMicroservice/CriarContatos.Api.sln
-
-    - name: Ensure Build Directories Exist
-      run: mkdir -p Producer/CreateContactMicroservice/CriarContatos.Api/bin/Release/net8.0
+      run: dotnet clean CreateContactMicroservice/CriarContatos.Api.sln
 
     - name: Build
-      run: dotnet build Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-restore --configuration Release
+      run: dotnet build CreateContactMicroservice/CriarContatos.Api.sln --no-restore --configuration Release
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
-        path: Producer/CreateContactMicroservice/**/bin/Release/net8.0/
+        path: CreateContactMicroservice/**/bin/Release/net8.0/
 
   test:
     runs-on: ubuntu-latest
@@ -56,16 +53,16 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-artifacts
-        path: Producer/CreateContactMicroservice/
+        path: CreateContactMicroservice/
 
     - name: Run all tests
-      run: dotnet test Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-build --configuration Release --logger "trx;LogFileName=TestResults/test-results.trx"
+      run: dotnet test CreateContactMicroservice/CriarContatos.Api.sln --no-build --configuration Release --logger "trx;LogFileName=TestResults/test-results.trx"
 
     - name: List Test Results
-      run: ls Producer/CreateContactMicroservice/CriarContatos.Test/TestResults || echo "Nenhum resultado encontrado."
+      run: ls CreateContactMicroservice/CriarContatos.Test/TestResults || echo "Nenhum resultado encontrado."
 
     - name: Publish Test Results
       uses: actions/upload-artifact@v4
       with:
         name: test-results
-        path: Producer/CreateContactMicroservice/CriarContatos.Test/TestResults
+        path: CreateContactMicroservice/CriarContatos.Test/TestResults
