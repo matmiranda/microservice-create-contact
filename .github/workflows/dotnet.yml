@@ -55,7 +55,7 @@ jobs:
         path: .
 
     - name: Run all tests
-      run: dotnet test Producer/CreateContact/CriarContatos.Test/bin/Release/net8.0/CriarContatos.Test.dll --no-build --verbosity normal --logger "trx;LogFileName=Producer/CreateContact/CriarContatos.Test/TestResults/all-test-results.trx"
+      run: dotnet test Producer/CreateContact/CriarContatos.Test/bin/Debug/net8.0/CriarContatos.Test.dll --no-build --verbosity normal --logger "trx;LogFileName=Producer/CreateContact/CriarContatos.Test/TestResults/all-test-results.trx"
 
     - name: List Test Results
       run: |
