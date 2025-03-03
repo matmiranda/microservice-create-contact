@@ -9,7 +9,7 @@ using System.Net;
 namespace CriarContatos.Test.Controllers
 {
     [TestFixture]
-    public class CadastroControllerTest
+    public class CadastroControllerTest : IDisposable
     {
         private Mock<ICadastroService> mockCadastroService;
         private CadastroController cadastroController;
@@ -20,6 +20,13 @@ namespace CriarContatos.Test.Controllers
             // Arrange: Inicializa o mock do ICadastroService
             mockCadastroService = new Mock<ICadastroService>();
             cadastroController = new CadastroController(mockCadastroService.Object);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            // Dispose the cadastroController
+            cadastroController.Dispose();
         }
 
         [Test]
@@ -66,6 +73,12 @@ namespace CriarContatos.Test.Controllers
 
             // Assert: Verifica a mensagem da exceção
             Assert.That(ex.Message, Is.EqualTo("Contato com este email já existe."));
+        }
+
+        public void Dispose()
+        {
+            // Dispose the cadastroController
+            cadastroController?.Dispose();
         }
     }
 }
