@@ -23,18 +23,18 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Restore dependencies
-      run: dotnet restore ContactAPI/FiapGrupo42Fase3.WebAPI.sln
+      run: dotnet restore Producer/Create Contact Microservice/CriarContatos.Api.sln
 
     - name: Build
-      run: dotnet build ContactAPI/FiapGrupo42Fase3.WebAPI.sln --no-restore
+      run: dotnet build Producer/Create Contact Microservice/CriarContatos.Api.sln --no-restore
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
         path: |
-          ContactAPI/FiapGrupo42Fase3.Test/bin/Debug/net8.0/
-          ContactAPI/FiapGrupo42Fase3.WebAPI/bin/Debug/net8.0/
+          Producer/Create Contact Microservice/FiapGrupo42Fase3.Test/bin/Debug/net8.0/
+          Producer/Create Contact Microservice/CriarContatos.Api/bin/Debug/net8.0/
 
   test:
     runs-on: ubuntu-latest
@@ -52,22 +52,22 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-artifacts
-        path: ContactAPI/
+        path: Producer/Create Contact Microservice/
 
     - name: Run all tests
-      run: dotnet test ContactAPI/FiapGrupo42Fase3.WebAPI.sln --no-build --verbosity normal --logger "trx;LogFileName=ContactAPI/FiapGrupo42Fase3.Test/TestResults/all-test-results.trx"
+      run: dotnet test Producer/Create Contact Microservice/CriarContatos.Api.sln --no-build --verbosity normal --logger "trx;LogFileName=Producer/Create Contact Microservice/FiapGrupo42Fase3.Test/TestResults/all-test-results.trx"
 
 
     - name: List Test Results
       run: |
         echo "Verificando conteúdo do diretório TestResults:"
-        ls ContactAPI/FiapGrupo42Fase3.Test/TestResults
+        ls Producer/Create Contact Microservice/FiapGrupo42Fase3.Test/TestResults
 
     - name: Publish Test Results
       uses: actions/upload-artifact@v4
       with:
         name: test-results
-        path: ContactAPI/FiapGrupo42Fase3.Test/TestResults
+        path: Producer/Create Contact Microservice/FiapGrupo42Fase3.Test/TestResults
 
   setup-monitoring:
     runs-on: ubuntu-latest
