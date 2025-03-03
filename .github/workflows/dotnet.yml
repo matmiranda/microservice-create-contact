@@ -33,7 +33,7 @@ jobs:
       with:
         name: build-artifacts
         path: |
-          Producer/Create Contact Microservice/FiapGrupo42Fase3.Test/bin/Debug/net8.0/
+          Producer/Create Contact Microservice/CriarContatos.Test/bin/Debug/net8.0/
           Producer/Create Contact Microservice/CriarContatos.Api/bin/Debug/net8.0/
 
   test:
@@ -55,19 +55,19 @@ jobs:
         path: Producer/Create Contact Microservice/
 
     - name: Run all tests
-      run: dotnet test Producer/Create Contact Microservice/CriarContatos.Api.sln --no-build --verbosity normal --logger "trx;LogFileName=Producer/Create Contact Microservice/FiapGrupo42Fase3.Test/TestResults/all-test-results.trx"
+      run: dotnet test Producer/Create Contact Microservice/CriarContatos.Api.sln --no-build --verbosity normal --logger "trx;LogFileName=Producer/Create Contact Microservice/CriarContatos.Test/TestResults/all-test-results.trx"
 
 
     - name: List Test Results
       run: |
         echo "Verificando conteúdo do diretório TestResults:"
-        ls Producer/Create Contact Microservice/FiapGrupo42Fase3.Test/TestResults
+        ls Producer/Create Contact Microservice/CriarContatos.Test/TestResults
 
     - name: Publish Test Results
       uses: actions/upload-artifact@v4
       with:
         name: test-results
-        path: Producer/Create Contact Microservice/FiapGrupo42Fase3.Test/TestResults
+        path: Producer/Create Contact Microservice/CriarContatos.Test/TestResults
 
   setup-monitoring:
     runs-on: ubuntu-latest
