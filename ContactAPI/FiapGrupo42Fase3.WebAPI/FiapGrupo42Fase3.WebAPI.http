@@ -1,6 +1,0 @@
-@FiapGrupo42Fase3.WebAPI_HostAddress = http://localhost:5298
-
-GET {{FiapGrupo42Fase3.WebAPI_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
