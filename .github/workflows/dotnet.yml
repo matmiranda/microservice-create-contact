@@ -23,18 +23,18 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Restore dependencies
-      run: dotnet restore Producer/Create Contact Microservice/CriarContatos.Api.sln
+      run: dotnet restore Producer/CreateContactMicroservice/CriarContatos.Api.sln
 
     - name: Build
-      run: dotnet build Producer/Create Contact Microservice/CriarContatos.Api.sln --no-restore
+      run: dotnet build Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-restore
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
         path: |
-          Producer/Create Contact Microservice/CriarContatos.Test/bin/Debug/net8.0/
-          Producer/Create Contact Microservice/CriarContatos.Api/bin/Debug/net8.0/
+          Producer/CreateContactMicroservice/CriarContatos.Test/bin/Debug/net8.0/
+          Producer/CreateContactMicroservice/CriarContatos.Api/bin/Debug/net8.0/
 
   test:
     runs-on: ubuntu-latest
@@ -52,22 +52,22 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-artifacts
-        path: Producer/Create Contact Microservice/
+        path: Producer/CreateContactMicroservice/
 
     - name: Run all tests
-      run: dotnet test Producer/Create Contact Microservice/CriarContatos.Api.sln --no-build --verbosity normal --logger "trx;LogFileName=Producer/Create Contact Microservice/CriarContatos.Test/TestResults/all-test-results.trx"
+      run: dotnet test Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-build --verbosity normal --logger "trx;LogFileName=Producer/CreateContactMicroservice/CriarContatos.Test/TestResults/all-test-results.trx"
 
 
     - name: List Test Results
       run: |
         echo "Verificando conteúdo do diretório TestResults:"
-        ls Producer/Create Contact Microservice/CriarContatos.Test/TestResults
+        ls Producer/CreateContactMicroservice/CriarContatos.Test/TestResults
 
     - name: Publish Test Results
       uses: actions/upload-artifact@v4
       with:
         name: test-results
-        path: Producer/Create Contact Microservice/CriarContatos.Test/TestResults
+        path: Producer/CreateContactMicroservice/CriarContatos.Test/TestResults
 
   setup-monitoring:
     runs-on: ubuntu-latest
