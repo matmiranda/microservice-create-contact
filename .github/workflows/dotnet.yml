@@ -28,6 +28,9 @@ jobs:
     - name: Build
       run: dotnet build Producer/CreateContact/CriarContatos.Api.sln --no-restore --configuration Release
 
+    - name: List Build Output
+      run: ls -R Producer/CreateContact/CriarContatos.Test/bin/Release/
+
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -59,7 +62,7 @@ jobs:
 
     - name: Run all tests
       run: dotnet test Producer/CreateContact/CriarContatos.Test/CriarContatos.Test.csproj --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=TestResults/all-test-results.trx"
-      
+
     - name: List Test Results
       run: |
         echo "Verificando conteúdo do diretório TestResults:"
