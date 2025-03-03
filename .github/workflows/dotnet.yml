@@ -25,8 +25,14 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore Producer/CreateContactMicroservice/CriarContatos.Api.sln
 
+    - name: Clean build directories
+      run: dotnet clean Producer/CreateContactMicroservice/CriarContatos.Api.sln
+
+    - name: Fix permissions for output directories
+      run: sudo chmod -R 777 $(System.DefaultWorkingDirectory)/Producer/CreateContactMicroservice/CriarContatos.Api/bin
+
     - name: Build
-      run: dotnet build Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-restore
+      run: dotnet build Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-restore --output $(System.DefaultWorkingDirectory)/bin/Debug/net8.0
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v4
@@ -55,9 +61,7 @@ jobs:
         path: Producer/CreateContactMicroservice/
 
     - name: Run all tests
-      # run: dotnet test Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-build --verbosity normal --logger "trx;LogFileName=Producer/CreateContactMicroservice/CriarContatos.Test/TestResults/all-test-results.trx"
       run: dotnet test Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-build --verbosity normal --logger "trx;LogFileName=TestResults/test-results.trx"
-
 
     - name: List Test Results
       run: |
