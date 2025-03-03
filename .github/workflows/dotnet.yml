@@ -54,12 +54,12 @@ jobs:
         name: build-artifacts
         path: .
 
+    - name: List Build Artifacts
+      run: ls -R Producer/CreateContact/CriarContatos.Test/bin/Release/net8.0/
+
     - name: Run all tests
       run: dotnet test Producer/CreateContact/CriarContatos.Test/CriarContatos.Test.csproj --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=TestResults/all-test-results.trx"
-
-    # - name: Run all tests
-    #   run: dotnet test Producer/CreateContact/CriarContatos.Api.sln --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=Producer/CreateContact/CriarContatos.Test/TestResults/all-test-results.trx"
-
+      
     - name: List Test Results
       run: |
         echo "Verificando conteúdo do diretório TestResults:"
