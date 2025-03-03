@@ -29,7 +29,7 @@ jobs:
       run: dotnet build Producer/CreateContact/CriarContatos.Api.sln --no-restore --configuration Release
 
     - name: List Build Output
-      run: ls -R Producer/CreateContact/CriarContatos.Test/bin/Release/
+      run: ls -R Producer/CreateContact/CriarContatos.Test/bin/Release/net8.0/
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v4
@@ -60,8 +60,11 @@ jobs:
     - name: List Build Artifacts
       run: ls -R Producer/CreateContact/CriarContatos.Test/bin/Release/net8.0/
 
+    - name: Create TestResults directory
+      run: mkdir -p CriarContatos.Test/TestResults
+
     - name: Run all tests
-      run: dotnet test Producer/CreateContact/CriarContatos.Test/CriarContatos.Test.csproj --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=TestResults/all-test-results.trx"
+      run: dotnet test Producer/CreateContact/CriarContatos.Test/CriarContatos.Test.csproj --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=CriarContatos.Test/TestResults/all-test-results.trx"
 
     - name: List Test Results
       run: |
@@ -69,6 +72,7 @@ jobs:
         ls CriarContatos.Test/TestResults
 
     - name: Publish Test Results
+      if: success() || failure()
       uses: actions/upload-artifact@v4
       with:
         name: test-results
@@ -80,10 +84,10 @@ jobs:
 
     steps:
     - name: Setup Prometheus
-      run: docker run -d --name prometheus -p 9090:9090 prom/prometheus
+      run: docker run -d --name prometheus -p 9090:9090 -v prometheus_data:/prometheus prom/prometheus
 
     - name: Setup Grafana
-      run: docker run -d --name grafana -p 3000:3000 grafana/grafana
+      run: docker run -d --name grafana -p 3000:3000 -v grafana_data:/var/lib/grafana grafana/grafana
 
     - name: Wait for Grafana to start 
       run: |
@@ -107,3 +111,9 @@ jobs:
     - name: Grafana Error Logs
       if: failure()
       run: docker logs grafana
+
+    - name: Cleanup Docker containers
+      if: always()
+      run: |
+        docker rm -f prometheus || true
+        docker rm -f grafana || true
