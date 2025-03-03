@@ -28,6 +28,9 @@ jobs:
     - name: Clean build directories
       run: dotnet clean Producer/CreateContactMicroservice/CriarContatos.Api.sln
 
+    - name: Ensure Build Directories Exist
+      run: mkdir -p Producer/CreateContactMicroservice/CriarContatos.Api/bin/Release/net8.0
+
     - name: Build
       run: dotnet build Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-restore --configuration Release
 
