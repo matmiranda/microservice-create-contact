@@ -28,16 +28,13 @@ jobs:
     - name: Build
       run: dotnet build Producer/CreateContact/CriarContatos.Api.sln --no-restore --configuration Release
 
-    - name: List Build Output
-      run: ls -R Producer/CreateContact/CriarContatos.Test/bin/Release/net8.0/
-
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
         path: |
-          Producer/CreateContact/CriarContatos.Test/bin/Release/net8.0/
-          Producer/CreateContact/CriarContatos.Api/bin/Release/net8.0/
+          CriarContatos.Test/bin/Release/net8.0/
+          CriarContatos.Api/bin/Release/net8.0/
 
   test:
     runs-on: ubuntu-latest
@@ -58,13 +55,13 @@ jobs:
         path: .
 
     - name: List Build Artifacts
-      run: ls -R .
+      run: ls -R CriarContatos.Test/bin/Release/net8.0/
 
     - name: Create TestResults directory
-      run: mkdir -p CriarContatos.Test/TestResults
+      run: mkdir -p TestResults
 
     - name: Run all tests
-      run: dotnet test Producer/CreateContact/CriarContatos.Test/CriarContatos.Test.csproj --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=CriarContatos.Test/TestResults/all-test-results.trx"
+      run: dotnet test CriarContatos.Test/CriarContatos.Test.csproj --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=TestResults/all-test-results.trx"
 
     - name: List Test Results
       run: |
@@ -76,7 +73,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: test-results
-        path: CriarContatos.Test/TestResults
+        path: TestResults
 
   setup-monitoring:
     runs-on: ubuntu-latest
