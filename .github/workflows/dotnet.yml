@@ -55,7 +55,8 @@ jobs:
         path: Producer/CreateContactMicroservice/
 
     - name: Run all tests
-      run: dotnet test Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-build --verbosity normal --logger "trx;LogFileName=Producer/CreateContactMicroservice/CriarContatos.Test/TestResults/all-test-results.trx"
+      # run: dotnet test Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-build --verbosity normal --logger "trx;LogFileName=Producer/CreateContactMicroservice/CriarContatos.Test/TestResults/all-test-results.trx"
+      run: dotnet test Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-build --verbosity normal --logger "trx;LogFileName=TestResults/test-results.trx"
 
 
     - name: List Test Results
