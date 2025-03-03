@@ -23,18 +23,18 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Restore dependencies
-      run: dotnet restore ContactAPI/FiapGrupo42Fase3.WebAPI.sln
+      run: dotnet restore CreateContact/FiapGrupo42Fase3.WebAPI.sln
 
     - name: Build
-      run: dotnet build ContactAPI/FiapGrupo42Fase3.WebAPI.sln --no-restore
+      run: dotnet build CreateContact/FiapGrupo42Fase3.WebAPI.sln --no-restore
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
         path: |
-          ContactAPI/FiapGrupo42Fase3.Test/bin/Debug/net8.0/
-          ContactAPI/FiapGrupo42Fase3.WebAPI/bin/Debug/net8.0/
+          CreateContact/FiapGrupo42Fase3.Test/bin/Debug/net8.0/
+          CreateContact/FiapGrupo42Fase3.WebAPI/bin/Debug/net8.0/
 
   test:
     runs-on: ubuntu-latest
@@ -55,7 +55,7 @@ jobs:
         path: .
 
     - name: Run all tests
-      run: dotnet test ContactAPI/FiapGrupo42Fase3.WebAPI.sln --no-build --verbosity normal --logger "trx;LogFileName=ContactAPI/FiapGrupo42Fase3.Test/TestResults/all-test-results.trx"
+      run: dotnet test CreateContact/FiapGrupo42Fase3.WebAPI.sln --no-build --verbosity normal --logger "trx;LogFileName=CreateContact/FiapGrupo42Fase3.Test/TestResults/all-test-results.trx"
 
 
     - name: List Test Results
