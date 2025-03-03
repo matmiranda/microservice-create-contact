@@ -34,7 +34,7 @@ jobs:
         name: build-artifacts
         path: |
           Producer/CreateContact/CriarContatos.Test/bin/Debug/net8.0/
-          Producer/CreateContact/CriarContatos.WebAPI/bin/Debug/net8.0/
+          Producer/CreateContact/CriarContatos.Api/bin/Debug/net8.0/
 
   test:
     runs-on: ubuntu-latest
