@@ -32,7 +32,7 @@ jobs:
     #   run: sudo chmod -R 777 $(System.DefaultWorkingDirectory)/Producer/CreateContactMicroservice/CriarContatos.Api/bin
 
     - name: Build
-      run: dotnet build Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-restore
+      run: dotnet build Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-restore --output ./output
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v4
