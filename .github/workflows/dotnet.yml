@@ -25,11 +25,17 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore Producer/CreateContactMicroservice/CriarContatos.Api.sln
 
-    - name: Clean previous builds
-      run: dotnet clean Producer/CreateContactMicroservice/CriarContatos.Api.sln
+    - name: Ensure permissions for build directory
+      run: |
+        sudo mkdir -p /home/runner/work/FiapGrupo42Fase3/FiapGrupo42Fase3/Output
+        sudo chmod -R 777 /home/runner/work/FiapGrupo42Fase3/FiapGrupo42Fase3/Output
 
     - name: Build
-      run: dotnet build Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-restore
+      run: dotnet build Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-restore --output /home/runner/work/FiapGrupo42Fase3/FiapGrupo42Fase3/Output/
+
+
+    # - name: Build
+    #   run: dotnet build Producer/CreateContactMicroservice/CriarContatos.Api.sln --no-restore
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v4
