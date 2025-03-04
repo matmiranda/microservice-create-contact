@@ -55,6 +55,9 @@ jobs:
           name: build-artifacts
           path: .
 
+      - name: Debug File Structure
+        run: ls -R .
+
       - name: Start API in Background
         env:
           ASPNETCORE_URLS: http://localhost:5102
@@ -62,7 +65,7 @@ jobs:
           cd CriarContatos.Api/bin/Release/net8.0/
           dotnet CriarContatos.Api.dll &
           for i in {1..10}; do
-            if curl -f http://localhost:5102/metrics > /dev/null 2>&1; then
+            if curl -f http://localhost:5102/health > /dev/null 2>&1; then
               echo "API started successfully"
               exit 0
             fi
@@ -71,6 +74,12 @@ jobs:
           done
           echo "API failed to start after 10 attempts"
           exit 1
+
+      - name: Test API Health
+        run: curl -f http://localhost:5102/health || exit 1
+
+      - name: Test API Metrics
+        run: curl -f http://localhost:5102/metrics || exit 1
 
   unit-tests:
     runs-on: ubuntu-latest
@@ -129,10 +138,20 @@ jobs:
           exit 1
 
       - name: Wait for Prometheus to scrape API metrics
-        run: sleep 10
+        run: sleep 20  # Aguardando métricas serem coletadas
+
+      - name: Debug Prometheus Targets
+        run: curl -s http://localhost:9090/api/v1/targets | jq .
 
       - name: Verify Prometheus scraping API metrics
-        run: curl -f http://localhost:9090/api/v1/targets | jq -e '.data.activeTargets[] | select(.health == "up")' || exit 1
+        run: |
+          if curl -s http://localhost:9090/api/v1/targets | jq -e '.data.activeTargets[] | select(.health == "up")'; then
+            echo "API registered successfully in Prometheus"
+          else
+            echo "Prometheus targets not ready, dumping logs..."
+            docker logs prometheus
+            exit 1
+          fi
 
       - name: Verify Grafana is running
         run: curl -L -f http://localhost:3000 > /dev/null || exit 1
