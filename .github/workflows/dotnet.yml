@@ -100,6 +100,8 @@ jobs:
   setup-monitoring:
     runs-on: ubuntu-latest
     needs: unit-tests
+    env:
+      ASPNETCORE_URLS: http://localhost:5102
     steps:
       - name: Install jq
         run: sudo apt-get install -y jq
@@ -114,7 +116,7 @@ jobs:
             - job_name: 'dotnet-api'
               metrics_path: '/metrics'
               static_configs:
-                - targets: ['host.docker.internal:5000']
+                - targets: ['localhost:5102']
           " > prometheus/prometheus.yml
 
           docker run -d --name prometheus -p 9090:9090 -v $(pwd)/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
