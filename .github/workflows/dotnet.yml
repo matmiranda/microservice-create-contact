@@ -60,7 +60,7 @@ jobs:
 
       - name: Start API in Background
         run: |
-          cd Producer/CreateContact/CriarContatos.Api/bin/Release/net8.0/
+          cd CriarContatos.Api/bin/Release/net8.0/
           dotnet CriarContatos.Api.dll &
           for i in {1..10}; do
             if curl -f http://localhost:5102; then
