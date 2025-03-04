@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - main
-      - develop # Permite rodar a pipeline na develop
-      - feature/* # Permite rodar em qualquer branch feature
+      - develop
+      - feature/* # Qualquer branch feature
   pull_request:
     branches:
       - main
@@ -27,17 +27,6 @@ jobs:
 
     - name: Build
       run: dotnet build Producer/CreateContact/CriarContatos.Api.sln --no-restore --configuration Release
-
-    - name: Run API in Background
-      run: |
-        dotnet Producer/CreateContact/CriarContatos.Api/bin/Release/net8.0/CriarContatos.Api.dll &
-        sleep 5 # Espera a API subir
-
-    - name: Test API Health
-      run: curl -f http://localhost:5102 || exit 1
-
-    - name: Test API Metrics
-      run: curl -f http://localhost:5102/metrics || exit 1
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v4
@@ -65,19 +54,24 @@ jobs:
         name: build-artifacts
         path: .
 
-    - name: List Build Artifacts
-      run: ls -R .
+    - name: Start RabbitMQ
+      run: |
+        docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+        sleep 10 # Aguarda RabbitMQ subir
 
-    - name: Create TestResults directory
-      run: mkdir -p CriarContatos.Test/TestResults
+    - name: Start API in Background
+      run: |
+        dotnet Producer/CreateContact/CriarContatos.Api/bin/Release/net8.0/CriarContatos.Api.dll &
+        sleep 5 # Espera a API subir
+
+    - name: Test API Health
+      run: curl -f http://localhost:5102 || exit 1
+
+    - name: Test API Metrics
+      run: curl -f http://localhost:5102/metrics || exit 1
 
     - name: Run all tests
-      run: dotnet test Producer/CreateContact/CriarContatos.Test/CriarContatos.Test.csproj --configuration Release --verbosity quiet --logger "trx;LogFileName=TestResults/all-test-results.trx" --results-directory CriarContatos.Test/TestResults
-
-    - name: List Test Results
-      run: |
-        echo "Verificando conteúdo do diretório TestResults:"
-        ls CriarContatos.Test/TestResults
+      run: dotnet test Producer/CreateContact/CriarContatos.Test/CriarContatos.Test.csproj --configuration Release --logger "trx;LogFileName=TestResults/all-test-results.trx" --results-directory CriarContatos.Test/TestResults
 
     - name: Publish Test Results
       if: success() || failure()
@@ -85,6 +79,9 @@ jobs:
       with:
         name: test-results
         path: CriarContatos.Test/TestResults
+
+    - name: Cleanup
+      run: docker rm -f rabbitmq || true
 
   setup-monitoring:
     runs-on: ubuntu-latest
