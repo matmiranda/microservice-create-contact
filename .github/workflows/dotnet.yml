@@ -106,6 +106,32 @@ jobs:
       - name: Install jq
         run: sudo apt-get install -y jq
 
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: .
+
+      - name: Debug File Structure
+        run: ls -R .
+
+      - name: Start API in Background
+        env:
+          ASPNETCORE_URLS: http://localhost:5102
+        run: |
+          cd CriarContatos.Api/bin/Release/net8.0/
+          dotnet CriarContatos.Api.dll &
+          for i in {1..10}; do
+            if curl -f http://localhost:5102/health > /dev/null 2>&1; then
+              echo "API started successfully"
+              exit 0
+            fi
+            echo "Waiting for API to start... Attempt $i of 10"
+            sleep 3
+          done
+          echo "API failed to start after 10 attempts"
+          exit 1
+
       - name: Setup Prometheus
         run: |
           mkdir -p prometheus
