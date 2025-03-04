@@ -19,6 +19,12 @@ builder.Services.AddScoped<ICadastroService, CadastroService>();
 
 builder.Services.AddScoped<IRabbitMqPublisherService, RabbitMqPublisherService>();
 
+// Adiciona a configuração do appsettings.json
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables(); // Permite sobrescrever com variáveis de ambiente
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
