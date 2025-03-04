@@ -64,9 +64,18 @@ jobs:
 
       - name: Start API in Background
         run: |
-          cd CriarContatos.Api/bin/Release/net8.0/
+          cd Producer/CreateContact/CriarContatos.Api/bin/Release/net8.0/
           dotnet CriarContatos.Api.dll &
-          sleep 5 # Espera a API subir
+          for i in {1..10}; do
+            if curl -f http://localhost:5102; then
+              echo "API started"
+              exit 0
+            fi
+            echo "Waiting for API..."
+            sleep 3
+          done
+          echo "API failed to start"
+          exit 1
 
       - name: Test API Health
         run: curl -f http://localhost:5102 || exit 1
