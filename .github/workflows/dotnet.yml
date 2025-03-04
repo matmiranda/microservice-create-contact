@@ -35,7 +35,6 @@ jobs:
         path: |
           Producer/CreateContact/CriarContatos.Test/bin/Release/net8.0/
           Producer/CreateContact/CriarContatos.Api/bin/Release/net8.0/
-          Producer/CreateContact/CriarContatos.Api/appsettings.json
 
   test:
     runs-on: ubuntu-latest
@@ -65,8 +64,9 @@ jobs:
 
     - name: Start API in Background
       run: |
-        dotnet CriarContatos.Api/bin/Release/net8.0/CriarContatos.Api.dll &
+        dotnet /home/runner/work/FiapGrupo42Fase3/FiapGrupo42Fase3/Producer/CreateContact/CriarContatos.Api/bin/Release/net8.0/CriarContatos.Api.dll &
         sleep 5 # Espera a API subir
+
 
     - name: Test API Health
       run: curl -f http://localhost:5102 || exit 1
