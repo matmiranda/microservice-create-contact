@@ -150,7 +150,7 @@ jobs:
             - job_name: 'dotnet-api'
               metrics_path: '/metrics'
               static_configs:
-                - targets: ['host.docker.internal:5102']
+                - targets: ['172.17.0.1:5102']
           " > prometheus/prometheus.yml
 
           docker run -d --name prometheus -p 9090:9090 -v $(pwd)/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
