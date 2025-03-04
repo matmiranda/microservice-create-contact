@@ -57,6 +57,17 @@ jobs:
     - name: List Build Artifacts
       run: ls -R .
 
+    - name: Run API in Background
+      run: |
+        dotnet Producer/CreateContact/CriarContatos.Api/bin/Release/net8.0/CriarContatos.Api.dll &
+        sleep 5 # Espera a API subir
+
+    - name: Test API Health
+      run: curl -f http://localhost:5102 || exit 1
+
+    - name: Test API Metrics
+      run: curl -f http://localhost:5102/metrics || exit 1
+
     - name: Create TestResults directory
       run: mkdir -p CriarContatos.Test/TestResults
 
