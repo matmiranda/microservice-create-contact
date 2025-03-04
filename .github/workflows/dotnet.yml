@@ -62,10 +62,10 @@ jobs:
       - name: Debug File Structure
         run: ls -R .
 
-
       - name: Start API in Background
         run: |
-          dotnet /home/runner/work/FiapGrupo42Fase3/FiapGrupo42Fase3/Producer/CreateContact/CriarContatos.Api/bin/Release/net8.0/CriarContatos.Api.dll & 
+          cd CriarContatos.Api/bin/Release/net8.0/
+          dotnet CriarContatos.Api.dll &
           sleep 5 # Espera a API subir
 
       - name: Test API Health
