@@ -64,7 +64,7 @@ jobs:
 
     - name: Start API in Background
       run: |
-        dotnet Producer/CreateContact/CriarContatos.Api/bin/Release/net8.0/CriarContatos.Api.dll &
+        dotnet dotnet CriarContatos.Api/bin/Release/net8.0/CriarContatos.Api.dll &
         sleep 5 # Espera a API subir
 
     - name: Test API Health
