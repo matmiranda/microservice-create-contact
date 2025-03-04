@@ -7,6 +7,9 @@ using CriarContatos.Service.RabbitMq;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Adiciona o serviço de health check
+builder.Services.AddHealthChecks();
+
 // Adiciona a configuração do appsettings.json
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -26,6 +29,9 @@ builder.Services.AddScoped<ICadastroService, CadastroService>();
 builder.Services.AddScoped<IRabbitMqPublisherService, RabbitMqPublisherService>();
 
 var app = builder.Build();
+
+// Mapeia o endpoint de health check
+app.MapHealthChecks("/health");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
