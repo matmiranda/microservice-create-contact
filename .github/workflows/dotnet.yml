@@ -35,6 +35,7 @@ jobs:
         path: |
           Producer/CreateContact/CriarContatos.Test/bin/Release/net8.0/
           Producer/CreateContact/CriarContatos.Api/bin/Release/net8.0/
+          Producer/CreateContact/CriarContatos.Api/appsettings.json
 
   test:
     runs-on: ubuntu-latest
