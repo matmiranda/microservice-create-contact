@@ -125,7 +125,7 @@ jobs:
 
       - name: Start API in Background
         env:
-          ASPNETCORE_URLS: http://localhost:5102
+          ASPNETCORE_URLS: http://0.0.0.0:5102
         run: |
           cd CriarContatos.Api/bin/Release/net8.0/
           dotnet CriarContatos.Api.dll &
@@ -150,7 +150,7 @@ jobs:
             - job_name: 'dotnet-api'
               metrics_path: '/metrics'
               static_configs:
-                - targets: ['api:5102']
+                - targets: ['localhost:5102']
           " > prometheus/prometheus.yml
 
           docker run -d --name prometheus -p 9090:9090 -v $(pwd)/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
