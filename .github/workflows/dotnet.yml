@@ -60,7 +60,7 @@ jobs:
           path: .
 
       - name: Debug File Structure
-        run: ls -R Producer/CreateContact/CriarContatos.Api/bin/Release/net8.0/
+        run: ls -R .
 
 
       - name: Start API in Background
