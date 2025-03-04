@@ -29,17 +29,21 @@ jobs:
         with:
           name: nuget-restore
           path: |
-            Producer/CreateContact/CriarContatos.Api/obj/project.assets.json
-            Producer/CreateContact/CriarContatos.Service/obj/project.assets.json
-            Producer/CreateContact/CriarContatos.Infrastructure/obj/project.assets.json
-            Producer/CreateContact/CriarContatos.Domain/obj/project.assets.json
-            Producer/CreateContact/CriarContatos.Test/obj/project.assets.json
+            Producer/CreateContact/**/obj/project.assets.json
+            Producer/CreateContact/**/obj/*.nuget.dgspec.json
+            Producer/CreateContact/**/obj/*.nuspec
+            ~/.nuget/packages/
 
   build:
     runs-on: ubuntu-latest
     needs: setup
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
       
       - name: Download NuGet Restore Artifacts
         uses: actions/download-artifact@v4
