@@ -1,3 +1,15 @@
+name: .NET CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/*
+  pull_request:
+    branches:
+      - main
+
 jobs:
   build-and-restore:
     runs-on: ubuntu-latest
@@ -44,33 +56,24 @@ jobs:
           path: .
 
       - name: Debug File Structure
-        run: |
-          echo "Listing all files in the repository..."
-          ls -R .  # Lista todos os arquivos e diretórios recursivamente
+        run: ls -R .
 
       - name: Start API in Background
         env:
           ASPNETCORE_URLS: http://localhost:5102
         run: |
-          # Verificando se o diretório existe antes de navegar
-          if [ -d "CriarContatos.Api/bin/Release/net8.0/" ]; then
-            echo "Diretório de build encontrado. Iniciando a API..."
-            cd CriarContatos.Api/bin/Release/net8.0/
-            dotnet CriarContatos.Api.dll &
-            for i in {1..10}; do
-              if curl -f http://localhost:5102/health > /dev/null 2>&1; then
-                echo "API started successfully"
-                exit 0
-              fi
-              echo "Waiting for API to start... Attempt $i of 10"
-              sleep 3
-            done
-            echo "API failed to start after 10 attempts"
-            exit 1
-          else
-            echo "Erro: Diretório 'CriarContatos.Api/bin/Release/net8.0/' não encontrado!"
-            exit 1
-          fi
+          cd CriarContatos.Api/bin/Release/net8.0/
+          dotnet CriarContatos.Api.dll &
+          for i in {1..10}; do
+            if curl -f http://localhost:5102/health > /dev/null 2>&1; then
+              echo "API started successfully"
+              exit 0
+            fi
+            echo "Waiting for API to start... Attempt $i of 10"
+            sleep 3
+          done
+          echo "API failed to start after 10 attempts"
+          exit 1
 
       - name: Test API Health
         run: curl -f http://localhost:5102/health || exit 1
@@ -131,24 +134,18 @@ jobs:
         env:
           ASPNETCORE_URLS: http://0.0.0.0:5102
         run: |
-          if [ -d "CriarContatos.Api/bin/Release/net8.0/" ]; then
-            echo "Diretório de build encontrado. Iniciando a API..."
-            cd CriarContatos.Api/bin/Release/net8.0/
-            dotnet CriarContatos.Api.dll &
-            for i in {1..10}; do
-              if curl -f http://localhost:5102/health > /dev/null 2>&1; then
-                echo "API started successfully"
-                exit 0
-              fi
-              echo "Waiting for API to start... Attempt $i of 10"
-              sleep 3
-            done
-            echo "API failed to start after 10 attempts"
-            exit 1
-          else
-            echo "Erro: Diretório 'CriarContatos.Api/bin/Release/net8.0/' não encontrado!"
-            exit 1
-          fi
+          cd CriarContatos.Api/bin/Release/net8.0/
+          dotnet CriarContatos.Api.dll &
+          for i in {1..10}; do
+            if curl -f http://localhost:5102/health > /dev/null 2>&1; then
+              echo "API started successfully"
+              exit 0
+            fi
+            echo "Waiting for API to start... Attempt $i of 10"
+            sleep 3
+          done
+          echo "API failed to start after 10 attempts"
+          exit 1
 
       - name: Setup Prometheus
         run: |
@@ -212,4 +209,3 @@ jobs:
           docker rm -f grafana || true
           docker volume rm prometheus_data || true
           docker volume rm grafana_data || true
-
