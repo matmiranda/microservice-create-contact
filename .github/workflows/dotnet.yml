@@ -1,49 +1,6 @@
-name: .NET CI Pipeline
-
-on:
-  push:
-    branches:
-      - main
-      - develop
-      - feature/*
-  pull_request:
-    branches:
-      - main
-
 jobs:
-  setup-services:
+  build-and-restore:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      # Instalar Docker Compose
-      - name: Install Docker Compose
-        run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version  # Verifica a instalação
-
-      - name: Start RabbitMQ via Docker Compose
-        run: |
-          docker-compose -f docker-compose.rabbitmq.yml up -d
-          docker ps
-
-      - name: Wait for RabbitMQ to be Ready
-        run: |
-          for i in {1..10}; do
-            if curl -f http://localhost:15672 > /dev/null 2>&1; then
-              echo "RabbitMQ is up"
-              exit 0
-            fi
-            echo "Waiting for RabbitMQ... Attempt $i of 10"
-            sleep 3
-          done
-          echo "RabbitMQ failed to start"
-          exit 1
-
-  build-and-test:
-    runs-on: ubuntu-latest
-    needs: setup-services
     steps:
       - uses: actions/checkout@v4
 
@@ -58,9 +15,6 @@ jobs:
       - name: Build
         run: dotnet build Producer/CreateContact/CriarContatos.Api.sln --configuration Release
 
-      - name: Run Unit Tests
-        run: dotnet test Producer/CreateContact/CriarContatos.Test/CriarContatos.Test.csproj --configuration Release
-
       - name: Publish Build Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -69,34 +23,133 @@ jobs:
             Producer/CreateContact/CriarContatos.Test/bin/Release/net8.0/
             Producer/CreateContact/CriarContatos.Api/bin/Release/net8.0/
 
-  start-api:
+  start-rabbitmq-and-api:
     runs-on: ubuntu-latest
-    needs: build-and-test
+    needs: build-and-restore
     steps:
+      - name: Start RabbitMQ
+        run: |
+          docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+          sleep 10 # Aguarda RabbitMQ subir
+
+      - name: Verify RabbitMQ
+        run: curl -f http://localhost:15672 || exit 1
+
       - uses: actions/checkout@v4
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: .
+
+      - name: Debug File Structure
+        run: |
+          echo "Listing all files in the repository..."
+          ls -R .  # Lista todos os arquivos e diretórios recursivamente
 
       - name: Start API in Background
         env:
           ASPNETCORE_URLS: http://localhost:5102
         run: |
-          cd CriarContatos.Api/bin/Release/net8.0/
-          dotnet CriarContatos.Api.dll &
+          # Verificando se o diretório existe antes de navegar
+          if [ -d "CriarContatos.Api/bin/Release/net8.0/" ]; then
+            echo "Diretório de build encontrado. Iniciando a API..."
+            cd CriarContatos.Api/bin/Release/net8.0/
+            dotnet CriarContatos.Api.dll &
+            for i in {1..10}; do
+              if curl -f http://localhost:5102/health > /dev/null 2>&1; then
+                echo "API started successfully"
+                exit 0
+              fi
+              echo "Waiting for API to start... Attempt $i of 10"
+              sleep 3
+            done
+            echo "API failed to start after 10 attempts"
+            exit 1
+          else
+            echo "Erro: Diretório 'CriarContatos.Api/bin/Release/net8.0/' não encontrado!"
+            exit 1
+          fi
 
-          for i in {1..10}; do
-            if curl -f http://localhost:5102/health > /dev/null 2>&1; then
-              echo "API started successfully"
-              exit 0
-            fi
-            echo "Waiting for API to start... Attempt $i of 10"
-            sleep 3
-          done
-          echo "API failed to start"
-          exit 1
+      - name: Test API Health
+        run: curl -f http://localhost:5102/health || exit 1
+
+      - name: Test API Metrics
+        run: curl -f http://localhost:5102/metrics || exit 1
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs: start-rabbitmq-and-api
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Unit Tests
+        run: dotnet test Producer/CreateContact/CriarContatos.Test/CriarContatos.Test.csproj --configuration Release --logger "trx;LogFileName=TestResults/unit-test-results.trx" --results-directory CriarContatos.Test/TestResults
+
+      - name: Publish Test Results
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: CriarContatos.Test/TestResults
 
   setup-monitoring:
     runs-on: ubuntu-latest
-    needs: start-api
+    needs: unit-tests
+    env:
+      ASPNETCORE_URLS: http://0.0.0.0:5102
     steps:
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Get Host IP
+        id: host-ip
+        run: |
+          HOST_IP=$(hostname -I | awk '{print $1}')
+          echo "HOST_IP=$HOST_IP" >> $GITHUB_ENV
+          echo "Host IP: $HOST_IP"  # Log para depuração
+
+      - name: Start RabbitMQ
+        run: |
+          docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+          sleep 10 # Aguarda RabbitMQ subir
+
+      - name: Verify RabbitMQ
+        run: curl -f http://localhost:15672 || exit 1
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: .
+
+      - name: Debug File Structure
+        run: ls -R .
+
+      - name: Start API in Background
+        env:
+          ASPNETCORE_URLS: http://0.0.0.0:5102
+        run: |
+          if [ -d "CriarContatos.Api/bin/Release/net8.0/" ]; then
+            echo "Diretório de build encontrado. Iniciando a API..."
+            cd CriarContatos.Api/bin/Release/net8.0/
+            dotnet CriarContatos.Api.dll &
+            for i in {1..10}; do
+              if curl -f http://localhost:5102/health > /dev/null 2>&1; then
+                echo "API started successfully"
+                exit 0
+              fi
+              echo "Waiting for API to start... Attempt $i of 10"
+              sleep 3
+            done
+            echo "API failed to start after 10 attempts"
+            exit 1
+          else
+            echo "Erro: Diretório 'CriarContatos.Api/bin/Release/net8.0/' não encontrado!"
+            exit 1
+          fi
+
       - name: Setup Prometheus
         run: |
           mkdir -p prometheus
@@ -107,7 +160,7 @@ jobs:
             - job_name: 'dotnet-api'
               metrics_path: '/metrics'
               static_configs:
-                - targets: ['localhost:5102']
+                - targets: ['${{ env.HOST_IP }}:5102']
           " > prometheus/prometheus.yml
 
           docker run -d --name prometheus -p 9090:9090 -v $(pwd)/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
@@ -115,14 +168,41 @@ jobs:
       - name: Setup Grafana
         run: docker run -d --name grafana -p 3000:3000 grafana/grafana
 
-      - name: Verify Prometheus and Grafana
+      - name: Wait for Prometheus to start
         run: |
-          curl -f http://localhost:9090/-/ready
-          curl -L -f http://localhost:3000
-          
+          for i in {1..10}; do
+            if curl -f http://localhost:9090/-/ready; then
+              echo "Prometheus is ready"
+              exit 0
+            fi
+            echo "Waiting for Prometheus..."
+            sleep 3
+          done
+          echo "Prometheus failed to start"
+          exit 1
+
+      - name: Wait for Prometheus to scrape API metrics
+        run: sleep 20  # Aguardando métricas serem coletadas
+
+      - name: Debug Prometheus Targets
+        run: curl -s http://localhost:9090/api/v1/targets | jq .
+
+      - name: Verify Prometheus scraping API metrics
+        run: |
+          if curl -s http://localhost:9090/api/v1/targets | jq -e '.data.activeTargets[] | select(.health == "up")'; then
+            echo "API registered successfully in Prometheus"
+          else
+            echo "Prometheus targets not ready, dumping logs..."
+            docker logs prometheus
+            exit 1
+          fi
+
+      - name: Verify Grafana is running
+        run: curl -L -f http://localhost:3000 > /dev/null || exit 1
+
   cleanup:
     runs-on: ubuntu-latest
-    needs: [build-and-test, setup-monitoring]
+    needs: [unit-tests, setup-monitoring]
     if: always()
     steps:
       - name: Cleanup Docker containers
