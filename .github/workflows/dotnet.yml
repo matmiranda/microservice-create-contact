@@ -186,4 +186,35 @@ jobs:
           echo "Prometheus failed to start"
           exit 1
 
-      - name: Wait for Prometheus to
+      - name: Wait for Prometheus to scrape API metrics
+        run: sleep 20  # Aguardando métricas serem coletadas
+
+      - name: Debug Prometheus Targets
+        run: curl -s http://localhost:9090/api/v1/targets | jq .
+
+      - name: Verify Prometheus scraping API metrics
+        run: |
+          if curl -s http://localhost:9090/api/v1/targets | jq -e '.data.activeTargets[] | select(.health == "up")'; then
+            echo "API registered successfully in Prometheus"
+          else
+            echo "Prometheus targets not ready, dumping logs..."
+            docker logs prometheus
+            exit 1
+          fi
+
+      - name: Verify Grafana is running
+        run: curl -L -f http://localhost:3000 > /dev/null || exit 1
+
+  # Job para limpeza de recursos (sempre executado, mesmo em caso de falha)
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: [unit-tests, setup-monitoring]
+    if: always()
+    steps:
+      - name: Cleanup Docker containers
+        run: |
+          docker rm -f rabbitmq || true
+          docker rm -f prometheus || true
+          docker rm -f grafana || true
+          docker volume rm prometheus_data || true
+          docker volume rm grafana_data || true
