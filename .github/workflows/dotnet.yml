@@ -212,3 +212,4 @@ jobs:
           docker rm -f grafana || true
           docker volume rm prometheus_data || true
           docker volume rm grafana_data || true
+
