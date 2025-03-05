@@ -21,7 +21,17 @@ jobs:
           sleep 10 # Aguarda RabbitMQ subir
 
       - name: Verify RabbitMQ
-        run: curl -f http://localhost:15672 || exit 1
+        run: |
+          for i in {1..10}; do
+            if curl -f http://localhost:15672; then
+              echo "RabbitMQ is ready"
+              exit 0
+            fi
+            echo "Waiting for RabbitMQ to start... Attempt $i of 10"
+            sleep 5
+          done
+          echo "RabbitMQ failed to start after 10 attempts"
+          exit 1
 
   # Job para build e restauração de dependências
   build-and-restore:
@@ -127,7 +137,17 @@ jobs:
           sleep 10 # Aguarda RabbitMQ subir
 
       - name: Verify RabbitMQ
-        run: curl -f http://localhost:15672 || exit 1
+        run: |
+          for i in {1..10}; do
+            if curl -f http://localhost:15672; then
+              echo "RabbitMQ is ready"
+              exit 0
+            fi
+            echo "Waiting for RabbitMQ to start... Attempt $i of 10"
+            sleep 5
+          done
+          echo "RabbitMQ failed to start after 10 attempts"
+          exit 1
 
       - name: Download Build Artifacts
         uses: actions/download-artifact@v4
@@ -140,7 +160,7 @@ jobs:
 
       - name: Start API in Background
         env:
-          ASPNETCORE_URLS: http://localhost:5102
+          ASPNETCORE_URLS: http://0.0.0.0:5102
         run: |
           cd CriarContatos.Api/bin/Release/net8.0/
           dotnet CriarContatos.Api.dll &
