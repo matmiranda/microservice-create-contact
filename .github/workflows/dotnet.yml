@@ -23,6 +23,10 @@ jobs:
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose --version  # Verifica a instalação
 
+      # Verifique se o arquivo docker-compose.rabbitmq.yml está presente
+      - name: Check for docker-compose file
+        run: ls -l   # Ajuste o caminho caso necessário
+
       - name: Start RabbitMQ via Docker Compose
         run: |
           docker-compose -f docker-compose.rabbitmq.yml up -d
