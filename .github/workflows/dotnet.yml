@@ -11,6 +11,19 @@ on:
       - main
 
 jobs:
+  # Job para configurar e iniciar o RabbitMQ
+  start-rabbitmq:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start RabbitMQ
+        run: |
+          docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+          sleep 10 # Aguarda RabbitMQ subir
+
+      - name: Verify RabbitMQ
+        run: curl -f http://localhost:15672 || exit 1
+
+  # Job para build e restauração de dependências
   build-and-restore:
     runs-on: ubuntu-latest
     steps:
@@ -35,18 +48,11 @@ jobs:
             Producer/CreateContact/CriarContatos.Test/bin/Release/net8.0/
             Producer/CreateContact/CriarContatos.Api/bin/Release/net8.0/
 
-  start-rabbitmq-and-api:
+  # Job para iniciar a API e testar sua saúde
+  start-api:
     runs-on: ubuntu-latest
-    needs: build-and-restore
+    needs: [build-and-restore, start-rabbitmq]
     steps:
-      - name: Start RabbitMQ
-        run: |
-          docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
-          sleep 10 # Aguarda RabbitMQ subir
-
-      - name: Verify RabbitMQ
-        run: curl -f http://localhost:15672 || exit 1
-
       - uses: actions/checkout@v4
 
       - name: Download Build Artifacts
@@ -81,9 +87,10 @@ jobs:
       - name: Test API Metrics
         run: curl -f http://localhost:5102/metrics || exit 1
 
+  # Job para executar testes unitários
   unit-tests:
     runs-on: ubuntu-latest
-    needs: start-rabbitmq-and-api
+    needs: start-api
     steps:
       - uses: actions/checkout@v4
 
@@ -97,6 +104,7 @@ jobs:
           name: unit-test-results
           path: CriarContatos.Test/TestResults
 
+  # Job para configurar monitoramento (Prometheus e Grafana)
   setup-monitoring:
     runs-on: ubuntu-latest
     needs: unit-tests
@@ -178,34 +186,4 @@ jobs:
           echo "Prometheus failed to start"
           exit 1
 
-      - name: Wait for Prometheus to scrape API metrics
-        run: sleep 20  # Aguardando métricas serem coletadas
-
-      - name: Debug Prometheus Targets
-        run: curl -s http://localhost:9090/api/v1/targets | jq .
-
-      - name: Verify Prometheus scraping API metrics
-        run: |
-          if curl -s http://localhost:9090/api/v1/targets | jq -e '.data.activeTargets[] | select(.health == "up")'; then
-            echo "API registered successfully in Prometheus"
-          else
-            echo "Prometheus targets not ready, dumping logs..."
-            docker logs prometheus
-            exit 1
-          fi
-
-      - name: Verify Grafana is running
-        run: curl -L -f http://localhost:3000 > /dev/null || exit 1
-
-  cleanup:
-    runs-on: ubuntu-latest
-    needs: [unit-tests, setup-monitoring]
-    if: always()
-    steps:
-      - name: Cleanup Docker containers
-        run: |
-          docker rm -f rabbitmq || true
-          docker rm -f prometheus || true
-          docker rm -f grafana || true
-          docker volume rm prometheus_data || true
-          docker volume rm grafana_data || true
+      - name: Wait for Prometheus to
