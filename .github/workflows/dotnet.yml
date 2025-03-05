@@ -136,7 +136,7 @@ jobs:
         env:
           ASPNETCORE_URLS: http://0.0.0.0:5102
         run: |
-          cd Producer/CreateContact/CriarContatos.Api/bin/Release/net8.0/
+          cd CriarContatos.Api/bin/Release/net8.0/
           dotnet CriarContatos.Api.dll &
           for i in {1..10}; do
             if curl -f http://localhost:5102/health > /dev/null 2>&1; then
