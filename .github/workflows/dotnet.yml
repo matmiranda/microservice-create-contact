@@ -53,10 +53,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
-          path: .
+          path: ./
 
       - name: Debug File Structure
-        run: ls -R .
+        run: ls -R ./
 
       - name: Start API in Background
         env:
@@ -125,10 +125,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
-          path: .
+          path: ./
 
       - name: Debug File Structure
-        run: ls -R .
+        run: ls -R ./
 
       - name: Start API in Background
         env:
@@ -193,6 +193,18 @@ jobs:
             docker logs prometheus
             exit 1
           fi
+
+      - name: Configure Grafana data source for Prometheus
+        run: |
+          sleep 10  # Aguarda o Grafana estar completamente pronto
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{
+                  "name": "Prometheus",
+                  "type": "prometheus",
+                  "url": "http://localhost:9090",
+                  "access": "proxy"
+                }' \
+            http://admin:admin@localhost:3000/api/datasources
 
       - name: Verify Grafana is running
         run: curl -L -f http://localhost:3000 > /dev/null || exit 1
