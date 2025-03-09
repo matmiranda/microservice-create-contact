@@ -2,7 +2,7 @@
 
 namespace CriarContatos.Domain.Requests
 {
-    public class CadastroRequest
+    public class ContatoRequest
     {
         [Required(ErrorMessage = "O nome do contato é obrigatório.")]
         [RegularExpression(@"^[a-zA-ZÀ-ÿ]+(\s[a-zA-ZÀ-ÿ]+)+$", ErrorMessage = "O nome deve conter nome e sobrenome, separados por um espaço.")]

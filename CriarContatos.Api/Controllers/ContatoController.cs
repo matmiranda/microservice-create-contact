@@ -1,6 +1,6 @@
 ﻿using CriarContatos.Domain.Requests;
 using CriarContatos.Domain.Responses;
-using CriarContatos.Service.Cadastro;
+using CriarContatos.Service.Contato;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -11,17 +11,17 @@ namespace CriarContatos.Api.Controllers
     /// </summary>
     [ApiController]
     [Route("[controller]")]
-    public class CadastroController : Controller
+    public class ContatoController : Controller
     {
-        private readonly ICadastroService cadastroService;
+        private readonly IContatoService contatoService;
 
         /// <summary>
-        /// Inicializa uma nova instância da classe <see cref="CadastroController"/>.
+        /// Inicializa uma nova instância da classe <see cref="ContatoController"/>.
         /// </summary>
-        /// <param name="cadastroService">O serviço de cadastro de contatos.</param>
-        public CadastroController(ICadastroService cadastroService)
+        /// <param name="contatoService">O serviço de cadastro de contatos.</param>
+        public ContatoController(IContatoService contatoService)
         {
-            this.cadastroService = cadastroService;
+            this.contatoService = contatoService;
         }
 
         /// <summary>
@@ -35,9 +35,9 @@ namespace CriarContatos.Api.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [SwaggerResponse(400, "Erro de validação", typeof(ExceptionResponse), "application/json")]
         [SwaggerResponse(409, "Erro de validação", typeof(ExceptionResponse), "application/json")]
-        public async Task<ActionResult<CadastroResponse>> PostContato(CadastroRequest contato)
+        public async Task<ActionResult<ContatoResponse>> PostContato(ContatoRequest contato)
         {
-            await cadastroService.AdicionarContato(contato);
+            await contatoService.AdicionarContato(contato);
             return Accepted();
         }
     }

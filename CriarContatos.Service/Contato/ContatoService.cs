@@ -5,18 +5,18 @@ using CriarContatos.Service.Mapper;
 using CriarContatos.Service.RabbitMq;
 using System.Net;
 
-namespace CriarContatos.Service.Cadastro
+namespace CriarContatos.Service.Contato
 {
-    public class CadastroService : ICadastroService
+    public class ContatoService : IContatoService
     {
         private readonly IRabbitMqPublisherService _rabbitMqPublisherService;
 
-        public CadastroService(IRabbitMqPublisherService rabbitMqPublisherService)
+        public ContatoService(IRabbitMqPublisherService rabbitMqPublisherService)
         {
             _rabbitMqPublisherService = rabbitMqPublisherService;
         }
 
-        public async Task AdicionarContato(CadastroRequest contato)
+        public async Task AdicionarContato(ContatoRequest contato)
         {
             //if (await _contatosRepository.ContatoExistePorEmail(contato.Email))
             //    throw new CustomException(HttpStatusCode.Conflict, "Contato com este email já existe.");

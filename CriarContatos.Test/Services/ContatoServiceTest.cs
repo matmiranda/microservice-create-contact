@@ -1,7 +1,7 @@
 ﻿using CriarContatos.Domain.Models.RabbitMq;
 using CriarContatos.Domain.Requests;
 using CriarContatos.Infrastructure.Exceptions;
-using CriarContatos.Service.Cadastro;
+using CriarContatos.Service.Contato;
 using CriarContatos.Service.RabbitMq;
 using Moq;
 using System.Net;
@@ -9,24 +9,24 @@ using System.Net;
 namespace CriarContatos.Test.Services
 {
     [TestFixture]
-    public class CadastroServiceTest
+    public class ContatoServiceTest
     {
         private Mock<IRabbitMqPublisherService> mockRabbitMqPublisherService;
-        private CadastroService cadastroService;
+        private ContatoService contatoService;
 
         [SetUp]
         public void SetUp()
         {
             // Inicializa o mock do IRabbitMqPublisherService
             mockRabbitMqPublisherService = new Mock<IRabbitMqPublisherService>();
-            cadastroService = new CadastroService(mockRabbitMqPublisherService.Object);
+            contatoService = new ContatoService(mockRabbitMqPublisherService.Object);
         }
 
         [Test]
         public async Task AdicionarContato_ShouldPublishMessage_WhenValidRequest()
         {
             // Arrange: Cria um objeto de request válido
-            var cadastroRequest = new CadastroRequest
+            var contatoRequest = new ContatoRequest
             {
                 Nome = "Nome Teste",
                 Telefone = "123456789",
@@ -35,7 +35,7 @@ namespace CriarContatos.Test.Services
             };
 
             // Ação: Chama o método AdicionarContato
-            await cadastroService.AdicionarContato(cadastroRequest);
+            await contatoService.AdicionarContato(contatoRequest);
 
             // Assert: Verifica se o método PublicarContatoAsync foi chamado uma vez
             mockRabbitMqPublisherService.Verify(service => service.PublicarContatoAsync(It.IsAny<ContactMessage>()), Times.Once);
@@ -48,7 +48,7 @@ namespace CriarContatos.Test.Services
             int dddInvalido = 999;
 
             // Ação & Assert: Verifica se uma exceção é lançada com a mensagem esperada
-            var exception = Assert.Throws<CustomException>(() => CadastroService.ObtemRegiaoPorDDD(dddInvalido));
+            var exception = Assert.Throws<CustomException>(() => ContatoService.ObtemRegiaoPorDDD(dddInvalido));
             Assert.That(exception.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
             Assert.That(exception.Message, Is.EqualTo("Região NÃO ENCONTRADA para o DDD: 999"));
         }
@@ -60,7 +60,7 @@ namespace CriarContatos.Test.Services
             int dddValido = 11;
 
             // Ação: Chama o método ObtemRegiaoPorDDD
-            var regiao = CadastroService.ObtemRegiaoPorDDD(dddValido);
+            var regiao = ContatoService.ObtemRegiaoPorDDD(dddValido);
 
             // Assert: Verifica se a região retornada está correta
             Assert.That(regiao, Is.EqualTo("4")); // Região 4 para o DDD 11

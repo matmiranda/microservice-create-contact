@@ -26,7 +26,7 @@ namespace CriarContatos.Api.Swagger
                 });
 
                 // Adicione exemplos diretamente na configuração do Swagger
-                c.MapType<CadastroRequest>(() => new OpenApiSchema
+                c.MapType<ContatoRequest>(() => new OpenApiSchema
                 {
                     Type = "object",
                     Properties = new Dictionary<string, OpenApiSchema>

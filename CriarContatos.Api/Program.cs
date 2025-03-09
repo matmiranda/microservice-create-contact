@@ -1,6 +1,6 @@
 using CriarContatos.Api.Swagger;
 using CriarContatos.Infrastructure.Exceptions;
-using CriarContatos.Service.Cadastro;
+using CriarContatos.Service.Contato;
 using Prometheus;
 using CriarContatos.Infrastructure.MassTransit;
 using CriarContatos.Service.RabbitMq;
@@ -24,7 +24,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerConfiguration();
-builder.Services.AddScoped<ICadastroService, CadastroService>();
+builder.Services.AddScoped<IContatoService, ContatoService>();
 
 builder.Services.AddScoped<IRabbitMqPublisherService, RabbitMqPublisherService>();
 

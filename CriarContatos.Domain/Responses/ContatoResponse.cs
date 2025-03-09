@@ -1,6 +1,6 @@
 ﻿namespace CriarContatos.Domain.Responses
 {
-    public class CadastroResponse
+    public class ContatoResponse
     {
         public int Id { get; set; }
     }

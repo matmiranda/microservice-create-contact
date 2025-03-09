@@ -6,7 +6,7 @@ namespace CriarContatos.Service.Mapper
 {
     public static class ContatoMapper
     {
-        public static ContactMessage ToContactMessage(CadastroRequest request, string regiao)
+        public static ContactMessage ToContactMessage(ContatoRequest request, string regiao)
         {
             return new ContactMessage
             {
