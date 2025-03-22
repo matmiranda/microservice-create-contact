@@ -44,21 +44,6 @@ jobs:
       - name: Verify RabbitMQ
         run: curl -f http://localhost:15672 || exit 1
 
-      - name: Override appsettings.json
-        run: |
-          cat > CriarContatos.Api/appsettings.json <<EOL
-          {
-            "RabbitMq": {
-              "Host": "localhost",
-              "Username": "admin",
-              "Password": "admin123"
-            },
-            "ConnectionStrings": {
-              "DefaultConnection": "Server=localhost;Database=MeuBanco;User Id=sa;Password=SenhaForte123;"
-            }
-          }
-          EOL
-
       - name: Set Environment Variables
         run: |
           echo "RABBITMQSETTINGS__HOST=localhost" >> $GITHUB_ENV
