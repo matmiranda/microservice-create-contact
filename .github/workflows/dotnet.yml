@@ -30,7 +30,16 @@ jobs:
       - name: Start RabbitMQ
         run: |
           docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
-          sleep 10 # Aguarda RabbitMQ subir
+          for i in {1..10}; do
+            if curl -f http://localhost:15672 > /dev/null 2>&1; then
+              echo "RabbitMQ is ready"
+              exit 0
+            fi
+            echo "Waiting for RabbitMQ to start... Attempt $i of 10"
+            sleep 5
+          done
+          echo "RabbitMQ failed to start"
+          exit 1
 
       - name: Verify RabbitMQ
         run: curl -f http://localhost:15672 || exit 1
