@@ -76,7 +76,9 @@ jobs:
         run: curl -f http://localhost:5102/metrics || exit 1
 
       - name: Run Unit Tests
-        run: dotnet test CriarContatos.Test/CriarContatos.Test.csproj --configuration Release --logger "trx;LogFileName=TestResults/unit-test-results.trx" --results-directory CriarContatos.Test/TestResults
+        # run: dotnet test CriarContatos.Test/CriarContatos.Test.csproj --configuration Release --logger "trx;LogFileName=TestResults/unit-test-results.trx" --results-directory CriarContatos.Test/TestResults
+        run: dotnet test CriarContatos.Test/CriarContatos.Test.csproj --configuration Release --logger "console;verbosity=detailed"
+
 
       - name: Cleanup
         if: always()
