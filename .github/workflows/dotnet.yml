@@ -59,6 +59,12 @@ jobs:
           }
           EOL
 
+      - name: Set Environment Variables
+        run: |
+          echo "RABBITMQSETTINGS__HOST=localhost" >> $GITHUB_ENV
+          echo "RABBITMQSETTINGS__USERNAME=guest" >> $GITHUB_ENV
+          echo "RABBITMQSETTINGS__PASSWORD=guest" >> $GITHUB_ENV
+
       - name: Start API in Background
         env:
           ASPNETCORE_URLS: http://localhost:5102
