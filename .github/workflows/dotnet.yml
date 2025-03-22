@@ -30,19 +30,17 @@ jobs:
       - name: Start RabbitMQ
         run: |
           docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+          sleep 10
           for i in {1..10}; do
-            if curl -f http://localhost:15672 > /dev/null 2>&1; then
+            if curl -u guest:guest -f http://localhost:15672/api/healthchecks/node > /dev/null 2>&1; then
               echo "RabbitMQ is ready"
               exit 0
             fi
             echo "Waiting for RabbitMQ to start... Attempt $i of 10"
             sleep 5
           done
-          echo "RabbitMQ failed to start after 10 attempts"
+          echo "RabbitMQ failed to start"
           exit 1
-
-      - name: Verify RabbitMQ
-        run: curl -f http://localhost:15672 || exit 1
 
       - name: Set Environment Variables
         run: |
@@ -55,7 +53,11 @@ jobs:
           ASPNETCORE_URLS: http://localhost:5102
         run: |
           cd CriarContatos.Api/bin/Release/net8.0/
-          dotnet CriarContatos.Api.dll &
+          dotnet CriarContatos.Api.dll & disown
+          sleep 5
+
+      - name: Wait for API to Start
+        run: |
           for i in {1..10}; do
             if curl -f http://localhost:5102/health > /dev/null 2>&1; then
               echo "API started successfully"
@@ -64,8 +66,14 @@ jobs:
             echo "Waiting for API to start... Attempt $i of 10"
             sleep 3
           done
-          echo "API failed to start after 10 attempts"
+          echo "API failed to start"
           exit 1
+
+      - name: Test API Health
+        run: curl -f http://localhost:5102/health || exit 1
+
+      - name: Test API Metrics
+        run: curl -f http://localhost:5102/metrics || exit 1
 
       - name: Run Unit Tests
         run: dotnet test CriarContatos.Test/CriarContatos.Test.csproj --configuration Release --logger "trx;LogFileName=TestResults/unit-test-results.trx" --results-directory CriarContatos.Test/TestResults
