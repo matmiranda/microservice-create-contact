@@ -75,9 +75,18 @@ jobs:
       - name: Test API Metrics
         run: curl -f http://localhost:5102/metrics || exit 1
 
-      - name: Run Unit Tests
-        # run: dotnet test CriarContatos.Test/CriarContatos.Test.csproj --configuration Release --logger "trx;LogFileName=TestResults/unit-test-results.trx" --results-directory CriarContatos.Test/TestResults
+      - name: Run Unit Tests        
         run: dotnet test CriarContatos.Test/CriarContatos.Test.csproj --configuration Release --logger "console;verbosity=detailed"
+
+      - name: Publish
+        run: dotnet publish CriarContatos.Api/CriarContatos.Api.csproj --configuration Release --output CriarContatos.Api/publish
+
+      - name: Deploy to Azure Aplication Api
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'cria-contato'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: 'CriarContatos.Api/publish'
 
 
       - name: Cleanup
