@@ -101,7 +101,7 @@ jobs:
       - name: Update AKS Deployment with new image
         uses: azure/k8s-deploy@v1
         with:
-          kubeconfig: ${{ secrets.AKS_KUBECONFIG }}
+          KUBECONFIG: ${{ secrets.AKS_KUBECONFIG }}
           manifests: |
             CriarContatos.Api/k8s/deployment.yml
             CriarContatos.Api/k8s/service.yml
