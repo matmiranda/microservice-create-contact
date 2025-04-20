@@ -76,20 +76,20 @@ jobs:
       - name: Test API Metrics
         run: curl -f http://localhost:5102/metrics || exit 1
 
-      - name: Run Unit Tests
+      - name: Run Unit Tests        
         run: dotnet test CriarContatos.Test/CriarContatos.Test.csproj --configuration Release --logger "console;verbosity=detailed"
 
       - name: Publish
         run: dotnet publish CriarContatos.Api/CriarContatos.Api.csproj --configuration Release --output CriarContatos.Api/publish
 
-      # --- Azure Login & ACR Login via az acr login ---
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      # --- Adicionando as etapas de Docker, ACR e AKS ---
 
-      - name: Azure Container Registry Login
-        run: az acr login --name ${{ secrets.ACR_NAME }}
+      - name: Log in to Azure Container Registry (ACR)
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
       - name: Build Docker image
         run: |
@@ -99,12 +99,18 @@ jobs:
         run: |
           docker push ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }}
 
-      # --- Setando o contexto do AKS e deploy ---
+      # Login no Azure
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Set AKS context
         uses: azure/aks-set-context@v3
         with:
-          resource-group: ${{ secrets.AKS_RESOURCE_GROUP }}
-          cluster-name: ${{ secrets.AKS_CLUSTER_NAME }}
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          resource-group: '${{ secrets.AKS_RESOURCE_GROUP }}'
+          cluster-name: '${{ secrets.AKS_CLUSTER_NAME }}'
 
       - name: Update AKS Deployment with new image
         uses: azure/k8s-deploy@v1
