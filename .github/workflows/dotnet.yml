@@ -111,11 +111,11 @@ jobs:
           manifests: |
             CriarContatos.Api/k8s/deployment.yml
             CriarContatos.Api/k8s/service.yml
-        images: |
-          ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }}
-        imagepullsecret: |
-          acr-auth
-          
+          images: |
+            ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }}
+          imagepullsecret: |
+            acr-auth
+
       - name: Cleanup
         if: always()
         run: |
