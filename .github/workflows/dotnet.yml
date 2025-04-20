@@ -22,8 +22,10 @@ jobs:
           auth-type: 'IDENTITY'   # Usando Managed Identity
           environment: 'azurecloud'
           allow-no-subscriptions: false
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}  # Se for necessário, adicione o client_id
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}  # Id do tenant, se necessário
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}  # Id do tenant
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  # Associe o subscription-id
+          enable-AzPSSession: false
+          audience: api://AzureADTokenExchange
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
