@@ -24,8 +24,8 @@ jobs:
         with:
           enable-AzPSSession: false
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          client-id: ${{ secrets.AZURE_USERNAME }}
-          client-secret: ${{ secrets.AZURE_PASSWORD }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}       # Client ID do Service Principal
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}  # Client Secret do Service Principal
 
 
       - name: Setup .NET
