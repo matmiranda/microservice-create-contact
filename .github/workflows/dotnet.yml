@@ -98,15 +98,24 @@ jobs:
         run: |
           docker push ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }}
 
+      - name: Set AKS context
+        uses: azure/aks-set-context@v3
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          resource-group: '${{ secrets.AKS_RESOURCE_GROUP }}'
+          cluster-name: '${{ secrets.AKS_CLUSTER_NAME }}'
+
       - name: Update AKS Deployment with new image
         uses: azure/k8s-deploy@v1
         with:
-          KUBECONFIG: ${{ secrets.AKS_KUBECONFIG }}
           manifests: |
             CriarContatos.Api/k8s/deployment.yml
             CriarContatos.Api/k8s/service.yml
-        env:
-          IMAGE_NAME: ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }}
+        images: |
+          ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }}
+        imagepullsecret: |
+          acr-auth
+          
       - name: Cleanup
         if: always()
         run: |
