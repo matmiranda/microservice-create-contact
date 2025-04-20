@@ -22,7 +22,6 @@ jobs:
       - name: Log in to Azure CLI
         uses: azure/cli-action@v1
         with:
-          azure-cli-version: '2.45.0'
           enable-AzPSSession: false
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           client-id: ${{ secrets.AZURE_USERNAME }}
