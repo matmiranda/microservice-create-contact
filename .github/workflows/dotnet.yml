@@ -103,8 +103,8 @@ jobs:
         with:
           kubeconfig: ${{ secrets.AKS_KUBECONFIG }}
           manifests: |
-            k8s/deployment.yml
-            k8s/service.yml
+            CriarContatos.Api/k8s/deployment.yml
+            CriarContatos.Api/k8s/service.yml
         env:
           IMAGE_NAME: ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }}
       - name: Cleanup
