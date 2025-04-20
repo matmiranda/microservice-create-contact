@@ -92,7 +92,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }} .
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }} ./CriarContatos.Api
 
       - name: Push Docker image to ACR
         run: |
