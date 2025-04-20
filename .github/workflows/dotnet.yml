@@ -81,13 +81,40 @@ jobs:
       - name: Publish
         run: dotnet publish CriarContatos.Api/CriarContatos.Api.csproj --configuration Release --output CriarContatos.Api/publish
 
-      - name: Deploy to Azure Aplication Api
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'cria-contato'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: 'CriarContatos.Api/publish'
+      # --- Adicionando as etapas de Docker, ACR e AKS ---
 
+      - name: Log in to Azure Container Registry (ACR)
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }} .
+
+      - name: Push Docker image to ACR
+        run: |
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }}
+
+      - name: Update AKS Deployment with new image
+        uses: azure/k8s-deploy@v1
+        with:
+          kubeconfig: ${{ secrets.AKS_KUBECONFIG }}
+          manifests: |
+            k8s/deployment.yml
+            k8s/service.yml
+        env:
+          IMAGE_NAME: ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }}
+
+      # # --- Continuar com a parte do deploy da aplicação Web ---
+      # - name: Deploy to Azure Aplication Api
+      #   uses: azure/webapps-deploy@v3
+      #   with:
+      #     app-name: 'cria-contato'
+      #     publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+      #     package: 'CriarContatos.Api/publish'
 
       - name: Cleanup
         if: always()

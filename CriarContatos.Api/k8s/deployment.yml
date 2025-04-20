@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: criar-contato-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: criar-contato
+  template:
+    metadata:
+      labels:
+        app: criar-contato
+    spec:
+      containers:
+      - name: criar-contato
+        image: containerfiap.azurecr.io/criar-contato:latest  # Ajuste o nome da imagem
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: acr-auth  # Referência ao Secret já criado
+      envFrom:
+      - configMapRef:
+          name: configmap  # Referência ao ConfigMap já criado
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: criar-contato-service
+spec:
+  selector:
+    app: criar-contato
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
