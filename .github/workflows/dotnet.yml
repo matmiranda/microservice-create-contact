@@ -20,12 +20,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Log in to Azure CLI
-        uses: azure/cli-action@v1
-        with:
-          enable-AzPSSession: false
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}       # Client ID do Service Principal
-          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}  # Client Secret do Service Principal
+        run: |
+          docker run --rm -v $HOME/.azure:/root/.azure mcr.microsoft.com/azure-cli az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+
 
 
       - name: Setup .NET
