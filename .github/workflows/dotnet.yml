@@ -22,12 +22,13 @@ jobs:
       - name: Log in to Azure
         uses: azure/login@v1
         with:
-          auth-type: 'IDENTITY'  # Usando Service Principal para autenticação
+          auth-type: 'IDENTITY'  # Usando Managed Identity para autenticação
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           environment: 'azurecloud'
           enable-AzPSSession: false
           audience: api://AzureADTokenExchange
+
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
