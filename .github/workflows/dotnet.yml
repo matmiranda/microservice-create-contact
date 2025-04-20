@@ -11,9 +11,8 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build-and-test:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -82,8 +81,7 @@ jobs:
       - name: Publish
         run: dotnet publish CriarContatos.Api/CriarContatos.Api.csproj --configuration Release --output CriarContatos.Api/publish
 
-      # --- Adicionando as etapas de Docker, ACR e AKS ---
-
+      # Docker, ACR, AKS steps
       - name: Log in to Azure Container Registry (ACR)
         uses: azure/docker-login@v1
         with:
@@ -98,12 +96,6 @@ jobs:
       - name: Push Docker image to ACR
         run: |
           docker push ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }}
-
-      # Login no Azure
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Set AKS context
         uses: azure/aks-set-context@v3
