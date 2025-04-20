@@ -83,14 +83,14 @@ jobs:
 
       # --- Adicionando as etapas de Docker, ACR e AKS --- 
 
-      - name: Log in to Azure
+      - name: Log in to Azure using Managed Identity
         uses: azure/login@v1
         with:
-          # client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          # client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-          # tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          # subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          auth-type: 'managedIdentity'
+          auth-type: 'Identity'
+          enable-AzPSSession: false
+          environment: azurecloud
+          allow-no-subscriptions: false
+          audience: api://AzureADTokenExchange
 
       - name: Log in to Azure Container Registry (ACR)
         uses: azure/docker-login@v1
