@@ -116,6 +116,10 @@ jobs:
         with:
           resource-group: '${{ secrets.AKS_RESOURCE_GROUP }}'
           cluster-name: '${{ secrets.AKS_CLUSTER_NAME }}'
+
+      - name: Create ConfigMap
+        run: |
+          kubectl apply -f CriarContatos.Api/k8s/configmap.yml
       
       - name: Update AKS Deployment with new image
         uses: azure/k8s-deploy@v1
