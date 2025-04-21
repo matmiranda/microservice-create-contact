@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: criar-contato-config
+  name: configmap
 data:
   Logging__LogLevel__Default: "Information"
   Logging__LogLevel__Microsoft__AspNetCore: "Warning"
