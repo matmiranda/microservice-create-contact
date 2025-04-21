@@ -19,10 +19,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Log in to Azure CLI
-        run: |
-          az login --use-device-code
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -89,16 +85,9 @@ jobs:
         run: dotnet publish CriarContatos.Api/CriarContatos.Api.csproj --configuration Release --output CriarContatos.Api/publish
 
       # --- Adicionando as etapas de Docker, ACR e AKS --- 
-
-      # - name: Log in to Azure
-      #   uses: azure/login@v1
-      #   with:
-      #     auth-type: 'Identity'   # Usando Managed Identity
-      #     environment: 'azurecloud'
-      #     allow-no-subscriptions: false
-      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}  # Se for necessário, adicione o client_id
-      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}  # Id do tenant, se necessário
-
+      - name: Log in to Azure CLI (Using Managed Identity)
+        run: |
+          az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }} --admin
 
       - name: Log in to Azure Container Registry (ACR)
         uses: azure/docker-login@v1
