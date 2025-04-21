@@ -125,7 +125,7 @@ jobs:
             CriarContatos.Api/k8s/service.yml
           images: |
             ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }}
-          imagepullsecret: |
+          imagepullsecrets: |
             acr-auth
 
       - name: Cleanup
