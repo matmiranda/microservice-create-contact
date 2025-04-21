@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: persistent-volume  # Nome do PersistentVolume
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: standard
+  azureDisk:
+    diskName: disco-fiap  # Nome do disco no Azure
+    diskURI: /subscriptions/6837c849-6303-4e99-a99f-316f98266202/resourceGroups/disco-fiap/providers/Microsoft.Compute/diskAccesses/disco-fiap  # URI do disco no Azure
