@@ -28,7 +28,7 @@ spec:
       volumes:
         - name: contato-volume
           persistentVolumeClaim:            
-            claimName: persistent-volume-claim # Referência ao PVC que deve ser criado
+            claimName: criar-contatos-persistent-volume-claim # Referência ao PVC que deve ser criado
 ---
 apiVersion: v1
 kind: Service
