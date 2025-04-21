@@ -96,6 +96,15 @@ jobs:
         run: |
           az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }}
 
+      - name: Verificar se o cluster Kubernetes está acessível
+        run: |
+          if kubectl cluster-info; then
+            echo "Cluster Kubernetes está acessível"
+          else
+            echo "Falha ao acessar o cluster Kubernetes"
+            exit 1
+          fi
+
       - name: Log in to Azure Container Registry (ACR)
         uses: azure/docker-login@v1
         with:
@@ -117,9 +126,13 @@ jobs:
           resource-group: '${{ secrets.AKS_RESOURCE_GROUP }}'
           cluster-name: '${{ secrets.AKS_CLUSTER_NAME }}'
 
-      - name: Create or Update ConfigMap
+      - name: Create or Update Kubernetes Resources
         run: |
-          kubectl get configmap configmap || kubectl apply -f CriarContatos.Api/k8s/configmap.yml
+          kubectl get configmap criar-contatos-configmap || kubectl apply -f CriarContatos.Api/k8s/criar-contatos-configmap.yml
+          kubectl get deployment criar-contatos-deployment || kubectl apply -f CriarContatos.Api/k8s/criar-contatos-deployment.yml
+          kubectl get pvc persistent-volume-claim || kubectl apply -f CriarContatos.Api/k8s/criar-contatos-persistent-volume-claim.yml
+          kubectl get pv criar-contatos-persistent-volume || kubectl apply -f CriarContatos.Api/k8s/criar-contatos-persistent-volume.yml
+          kubectl get service criar-contatos-service || kubectl apply -f CriarContatos.Api/k8s/criar-contatos-service.yml
       
       - name: Update AKS Deployment with new image
         uses: azure/k8s-deploy@v1
