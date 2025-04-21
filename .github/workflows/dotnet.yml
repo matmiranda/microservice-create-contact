@@ -130,7 +130,7 @@ jobs:
         run: |
           kubectl get configmap criar-contatos-configmap || kubectl apply -f CriarContatos.Api/k8s/criar-contatos-configmap.yml
           kubectl get deployment criar-contatos-deployment || kubectl apply -f CriarContatos.Api/k8s/criar-contatos-deployment.yml
-          kubectl get pvc persistent-volume-claim || kubectl apply -f CriarContatos.Api/k8s/criar-contatos-persistent-volume-claim.yml
+          kubectl get pvc criar-contatos-persistent-volume-claim || kubectl apply -f CriarContatos.Api/k8s/criar-contatos-persistent-volume-claim.yml
           kubectl get pv criar-contatos-persistent-volume || kubectl apply -f CriarContatos.Api/k8s/criar-contatos-persistent-volume.yml
           kubectl get service criar-contatos-service || kubectl apply -f CriarContatos.Api/k8s/criar-contatos-service.yml
       
