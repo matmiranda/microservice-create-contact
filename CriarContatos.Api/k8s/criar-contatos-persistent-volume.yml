@@ -1,15 +1,11 @@
 apiVersion: v1
-kind: PersistentVolume
+kind: PersistentVolumeClaim
 metadata:
-  name: criar-contatos-persistent-volume  # Nome do PersistentVolume
+  name: criar-contatos-persistent-volume-claim
 spec:
-  capacity:
-    storage: 1Gi
-  volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: standard
-  azureDisk:
-    diskName: disco-fiap  # Nome do disco no Azure
-    diskURI: /subscriptions/6837c849-6303-4e99-a99f-316f98266202/resourcegroups/disco-fiap-recurso/providers/Microsoft.Compute/disks/disco-fiap  # URI do disco no Azure
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: default  # ou "managed-premium", dependendo do seu cluster
