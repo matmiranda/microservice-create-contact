@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: criar-contatos-persistent-volume-claim
+  name: criar-contatos-persistent-volume
 spec:
   accessModes:
     - ReadWriteOnce

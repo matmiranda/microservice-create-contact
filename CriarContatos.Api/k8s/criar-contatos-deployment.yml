@@ -13,7 +13,7 @@ spec:
         app: criar-contato
     spec:
       containers:
-      - name: criar-contato        
+      - name: criar-contato
         image: containerfiap.azurecr.io/criar-contato:latest # Ajuste o nome da imagem
         ports:
         - containerPort: 80
