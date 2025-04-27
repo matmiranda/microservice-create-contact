@@ -8,4 +8,4 @@ spec:
   resources:
     requests:
       storage: 1Gi  # Tamanho do volume
-  storageClassName: standard  # Pode ser ajustado conforme a configuração de armazenamento do seu cluster
+  storageClassName: default  # Pode ser ajustado conforme a configuração de armazenamento do seu cluster
