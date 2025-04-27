@@ -148,8 +148,8 @@ jobs:
         uses: azure/k8s-deploy@v1
         with:
           manifests: |
-            CriarContatos.Api/k8s/deployment.yml
-            CriarContatos.Api/k8s/service.yml
+            CriarContatos.Api/k8s/criar-contatos-deployment.yml
+            CriarContatos.Api/k8s/criar-contatos-service.yml
           images: |
             ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }}
           imagepullsecrets: |
