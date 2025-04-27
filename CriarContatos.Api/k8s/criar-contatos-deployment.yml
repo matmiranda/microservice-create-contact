@@ -14,31 +14,18 @@ spec:
     spec:
       containers:
       - name: criar-contato
-        image: containerfiap.azurecr.io/criar-contato:latest # Ajuste o nome da imagem
+        image: containerfiap.azurecr.io/criar-contato:latest
         ports:
         - containerPort: 80
         envFrom:
           - configMapRef:
-              name: criar-contatos-configmap # Referência ao ConfigMap já criado
+              name: criar-contatos-configmap
         volumeMounts:
           - name: contato-volume
             mountPath: /app/data            
       imagePullSecrets:      
-      - name: acr-auth # Referência ao Secret já criado
+      - name: acr-auth
       volumes:
         - name: contato-volume
           persistentVolumeClaim:            
-            claimName: criar-contatos-persistent-volume-claim # Referência ao PVC que deve ser criado
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: criar-contato-service
-spec:
-  selector:
-    app: criar-contato
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
-  type: LoadBalancer
+            claimName: criar-contatos-persistent-volume-claim

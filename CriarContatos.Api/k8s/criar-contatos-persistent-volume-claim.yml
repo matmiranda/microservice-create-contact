@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: criar-contatos-persistent-volume-claim  # Nome que será referenciado no Deployment
+  name: criar-contatos-persistent-volume-claim
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi  # Tamanho do volume
-  storageClassName: default  # Pode ser ajustado conforme a configuração de armazenamento do seu cluster
+      storage: 1Gi
+  storageClassName: default
