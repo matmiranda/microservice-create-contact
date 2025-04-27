@@ -128,12 +128,49 @@ jobs:
 
       - name: Update Kubernetes Resources
         run: |
+          # Verifica e aplica ConfigMap
           kubectl get configmap criar-contatos-configmap || kubectl apply -f CriarContatos.Api/k8s/criar-contatos-configmap.yml
+
+          # Verifica e aplica Deployment
           kubectl get deployment criar-contatos-deployment || kubectl apply -f CriarContatos.Api/k8s/criar-contatos-deployment.yml
-          kubectl get pvc criar-contatos-persistent-volume-claim && kubectl delete pvc criar-contatos-persistent-volume-claim || echo "PVC não existe"
-          kubectl get pv criar-contatos-persistent-volume && kubectl delete pv criar-contatos-persistent-volume || echo "PV não existe"
+
+          # Deleta o PVC se existir
+          if kubectl get pvc criar-contatos-persistent-volume-claim; then
+            kubectl delete pvc criar-contatos-persistent-volume-claim
+            echo "Aguardando exclusão do PVC..."
+            for i in {1..10}; do
+              if ! kubectl get pvc criar-contatos-persistent-volume-claim; then
+                echo "PVC removido com sucesso"
+                break
+              fi
+              echo "Tentativa $i: PVC ainda existe, aguardando 3 segundos..."
+              sleep 3
+            done
+          else
+            echo "PVC não existe"
+          fi
+
+          # Deleta o PV se existir
+          if kubectl get pv criar-contatos-persistent-volume; then
+            kubectl delete pv criar-contatos-persistent-volume
+            echo "Aguardando exclusão do PV..."
+            for i in {1..10}; do
+              if ! kubectl get pv criar-contatos-persistent-volume; then
+                echo "PV removido com sucesso"
+                break
+              fi
+              echo "Tentativa $i: PV ainda existe, aguardando 3 segundos..."
+              sleep 3
+            done
+          else
+            echo "PV não existe"
+          fi
+
+          # Aplica o PV e PVC novos
           kubectl apply -f CriarContatos.Api/k8s/criar-contatos-persistent-volume.yml
           kubectl apply -f CriarContatos.Api/k8s/criar-contatos-persistent-volume-claim.yml
+
+          # Verifica e aplica Service
           kubectl get service criar-contatos-service || kubectl apply -f CriarContatos.Api/k8s/criar-contatos-service.yml
       
       - name: Update AKS Deployment with new image
