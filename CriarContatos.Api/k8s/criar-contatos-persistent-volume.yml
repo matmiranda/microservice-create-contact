@@ -15,4 +15,4 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: default
   hostPath:
-    path: /data/criar-contatos
+    path: /data/criar-contatos/logs

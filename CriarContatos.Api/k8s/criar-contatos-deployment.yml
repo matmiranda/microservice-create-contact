@@ -31,11 +31,11 @@ spec:
             - configMapRef:
                 name: criar-contatos-configmap
           volumeMounts:
-            - name: contatos-volume
-              mountPath: /app/data
+            - name: criar-contatos-volume
+              mountPath: /app/logs/criar-contatos
       imagePullSecrets:
         - name: acr-auth
       volumes:
-        - name: contatos-volume
+        - name: criar-contatos-volume
           persistentVolumeClaim:
             claimName: criar-contatos-persistent-volume-claim
