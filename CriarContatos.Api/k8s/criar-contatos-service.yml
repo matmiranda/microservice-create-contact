@@ -2,10 +2,16 @@ apiVersion: v1
 kind: Service
 metadata:
   name: criar-contatos-service
+  labels:
+    app: criar-contatos
+    tier: backend
+    environment: production
+  annotations:
+    description: "Service para expor o microsserviço criar-contatos"
 spec:
   type: LoadBalancer
   selector:
-    app: criar-contato
+    app: criar-contatos
   ports:
     - protocol: TCP
       port: 80
