@@ -114,11 +114,11 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }} -f CriarContatos.Api/Dockerfile .
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/criar-contatos:${{ github.sha }} -f CriarContatos.Api/Dockerfile .
 
       - name: Push Docker image to ACR
         run: |
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }}
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/criar-contatos:${{ github.sha }}
 
       - name: Set AKS context
         uses: azure/aks-set-context@v3
@@ -128,6 +128,12 @@ jobs:
 
       - name: Update Kubernetes Resources
         run: |
+          # Deleta os recursos existentes, se houver
+          kubectl delete service criar-contatos-service || true
+          kubectl delete deployment criar-contatos-deployment || true
+          kubectl delete pvc criar-contatos-persistent-volume-claim || true
+          kubectl delete pv criar-contatos-persistent-volume || true
+
           # Aplica ConfigMap (cria ou atualiza se necessário)
           kubectl apply -f CriarContatos.Api/k8s/criar-contatos-configmap.yml
 
