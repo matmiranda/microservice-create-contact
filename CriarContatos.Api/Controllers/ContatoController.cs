@@ -40,7 +40,5 @@ namespace CriarContatos.Api.Controllers
             await contatoService.AdicionarContato(contato);
             return Accepted();
         }
-
-        //teste funcionando esteira github
     }
 }
