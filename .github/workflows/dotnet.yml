@@ -157,7 +157,7 @@ jobs:
             CriarContatos.Api/k8s/criar-contatos-deployment.yml
             CriarContatos.Api/k8s/criar-contatos-service.yml
           images: |
-            ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:${{ github.sha }}
+            ${{ secrets.ACR_LOGIN_SERVER }}/criar-contato:latest
           imagepullsecrets: |
             acr-auth
 
