@@ -128,11 +128,12 @@ jobs:
 
       - name: Update Kubernetes Resources
         run: |
-          # Deleta os recursos existentes, se houver
-          kubectl delete service criar-contatos-service || true
-          kubectl delete deployment criar-contatos-deployment || true
-          kubectl delete pvc criar-contatos-persistent-volume-claim || true
-          kubectl delete pv criar-contatos-persistent-volume || true
+          # Verifica e deleta os recursos existentes, se houver
+          kubectl get service criar-contatos-service && kubectl delete service criar-contatos-service || true
+          kubectl get deployment criar-contatos-deployment && kubectl delete deployment criar-contatos-deployment || true
+          kubectl get pvc criar-contatos-persistent-volume-claim && kubectl delete pvc criar-contatos-persistent-volume-claim || true
+          kubectl get pv criar-contatos-persistent-volume && kubectl delete pv criar-contatos-persistent-volume || true
+
 
           # Aplica ConfigMap (cria ou atualiza se necessário)
           kubectl apply -f CriarContatos.Api/k8s/criar-contatos-configmap.yml
