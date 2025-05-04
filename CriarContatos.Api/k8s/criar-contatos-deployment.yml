@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: criar-contatos
+  name: criar-contatos-deployment
   labels:
     app: criar-contatos
     tier: backend
