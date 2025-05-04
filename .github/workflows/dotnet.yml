@@ -128,11 +128,18 @@ jobs:
 
       - name: Update Kubernetes Resources
         run: |
-          # Verifica e deleta os recursos existentes, se houver
-          kubectl get service criar-contatos-service && kubectl delete service criar-contatos-service || true
-          kubectl get deployment criar-contatos-deployment && kubectl delete deployment criar-contatos-deployment || true
-          kubectl get pvc criar-contatos-persistent-volume-claim && kubectl delete pvc criar-contatos-persistent-volume-claim || true
-          kubectl get pv criar-contatos-persistent-volume && kubectl delete pv criar-contatos-persistent-volume || true
+          # Deleta os recursos existentes, se houver
+          kubectl get service criar-contatos-service || echo "Service 'criar-contatos-service' não encontrado."
+          kubectl delete service criar-contatos-service || echo "Service 'criar-contatos-service' não encontrado para deletar."
+    
+          kubectl get deployment criar-contatos-deployment || echo "Deployment 'criar-contatos-deployment' não encontrado."
+          kubectl delete deployment criar-contatos-deployment || echo "Deployment 'criar-contatos-deployment' não encontrado para deletar."
+    
+          kubectl get pvc criar-contatos-persistent-volume-claim || echo "PVC 'criar-contatos-persistent-volume-claim' não encontrado."
+          kubectl delete pvc criar-contatos-persistent-volume-claim || echo "PVC 'criar-contatos-persistent-volume-claim' não encontrado para deletar."
+    
+          kubectl get pv criar-contatos-persistent-volume || echo "PV 'criar-contatos-persistent-volume' não encontrado."
+          kubectl delete pv criar-contatos-persistent-volume || echo "PV 'criar-contatos-persistent-volume' não encontrado para deletar."
 
 
           # Aplica ConfigMap (cria ou atualiza se necessário)
