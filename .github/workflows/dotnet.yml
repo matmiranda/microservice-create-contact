@@ -24,8 +24,11 @@ jobs:
         with:
           dotnet-version: 8.0.x
       
-      - name: Print all environment variables
-        run: env
+      - name: Debug secrets usage
+        run: |
+          echo "Using ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}"
+          echo "Using AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}"
+          echo "Using AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}"
 
       - name: Restore dependencies
         run: dotnet restore CriarContatos.Api.sln
