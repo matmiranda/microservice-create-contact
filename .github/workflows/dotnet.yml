@@ -128,27 +128,13 @@ jobs:
 
       - name: Update Kubernetes Resources
         run: |
-          # Deleta os recursos existentes, se houver
-          kubectl get service criar-contatos-service || echo "Service 'criar-contatos-service' não encontrado."
-          kubectl delete service criar-contatos-service || echo "Service 'criar-contatos-service' não encontrado para deletar."
-    
-          kubectl get deployment criar-contatos-deployment || echo "Deployment 'criar-contatos-deployment' não encontrado."
-          kubectl delete deployment criar-contatos-deployment || echo "Deployment 'criar-contatos-deployment' não encontrado para deletar."
-    
-          kubectl get pvc criar-contatos-persistent-volume-claim || echo "PVC 'criar-contatos-persistent-volume-claim' não encontrado."
-          kubectl patch pvc criar-contatos-persistent-volume-claim --type=merge -p '{"metadata":{"finalizers":[]}}' || echo "Falha ao remover finalizadores do PVC."
-          kubectl delete pvc criar-contatos-persistent-volume-claim || echo "PVC 'criar-contatos-persistent-volume-claim' não encontrado para deletar."
-    
-          kubectl get pv criar-contatos-persistent-volume || echo "PV 'criar-contatos-persistent-volume' não encontrado."
-          kubectl delete pv criar-contatos-persistent-volume || echo "PV 'criar-contatos-persistent-volume' não encontrado para deletar."
-
           # Aplica ConfigMap (cria ou atualiza se necessário)
           kubectl apply -f CriarContatos.Api/k8s/criar-contatos-configmap.yml
 
           # Aplica Deployment (cria ou atualiza se necessário)
           kubectl apply -f CriarContatos.Api/k8s/criar-contatos-deployment.yml
 
-          # Aplica PVC e PV novos, caso necessário
+          # Aplica PVC e PV (apenas cria ou atualiza, sem deletar)
           kubectl apply -f CriarContatos.Api/k8s/criar-contatos-persistent-volume.yml
           kubectl apply -f CriarContatos.Api/k8s/criar-contatos-persistent-volume-claim.yml
 
