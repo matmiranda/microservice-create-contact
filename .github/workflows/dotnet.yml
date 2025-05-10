@@ -136,11 +136,11 @@ jobs:
           kubectl delete deployment criar-contatos-deployment || echo "Deployment 'criar-contatos-deployment' não encontrado para deletar."
     
           kubectl get pvc criar-contatos-persistent-volume-claim || echo "PVC 'criar-contatos-persistent-volume-claim' não encontrado."
+          kubectl patch pvc criar-contatos-persistent-volume-claim --type=merge -p '{"metadata":{"finalizers":[]}}' || echo "Falha ao remover finalizadores do PVC."
           kubectl delete pvc criar-contatos-persistent-volume-claim || echo "PVC 'criar-contatos-persistent-volume-claim' não encontrado para deletar."
     
           kubectl get pv criar-contatos-persistent-volume || echo "PV 'criar-contatos-persistent-volume' não encontrado."
           kubectl delete pv criar-contatos-persistent-volume || echo "PV 'criar-contatos-persistent-volume' não encontrado para deletar."
-
 
           # Aplica ConfigMap (cria ou atualiza se necessário)
           kubectl apply -f CriarContatos.Api/k8s/criar-contatos-configmap.yml
