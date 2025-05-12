@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: criar-contatos-persistent-volume
+  name: producer-criar-contatos-persistent-volume
   labels:
-    app: criar-contatos
+    app: producer-criar-contatos
     tier: backend
   annotations:
-    description: "Volume persistente para dados do microsserviço criar-contatos"
+    description: "Volume persistente para dados do microsserviço producer-criar-contatos"
 spec:
   capacity:
     storage: 1Gi
@@ -15,4 +15,4 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: default
   hostPath:
-    path: /data/criar-contatos/logs/producer
+    path: /data/producer-criar-contatos/logs/producer

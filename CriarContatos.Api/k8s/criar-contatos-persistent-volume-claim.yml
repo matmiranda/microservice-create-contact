@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: criar-contatos-persistent-volume-claim
+  name: producer-criar-contatos-persistent-volume-claim
   labels:
-    app: criar-contatos
+    app: producer-criar-contatos
     tier: backend
   annotations:
-    description: "Claim para acessar o volume persistente do microsserviço criar-contatos"
+    description: "Claim para acessar o volume persistente do microsserviço producer-criar-contatos"
 spec:
   accessModes:
     - ReadWriteOnce

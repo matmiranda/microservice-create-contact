@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: criar-contatos-deployment
+  name: producer-criar-contatos-deployment
   labels:
-    app: criar-contatos
+    app: producer-criar-contatos
     tier: backend
     environment: production
   annotations:
@@ -12,30 +12,30 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      app: criar-contatos
+      app: producer-criar-contatos
   template:
     metadata:
       labels:
-        app: criar-contatos
+        app: producer-criar-contatos
         tier: backend
         environment: production
       annotations:
-        description: "Pod do microsserviço criar-contatos"
+        description: "Pod do microsserviço producer-criar-contatos"
     spec:
       containers:
-        - name: criar-contatos
-          image: containerfiap.azurecr.io/criar-contatos:latest
+        - name: producer-criar-contatos
+          image: containerfiap.azurecr.io/producer-criar-contatos:latest
           ports:
             - containerPort: 80
           envFrom:
             - configMapRef:
-                name: criar-contatos-configmap
+                name: producer-criar-contatos-configmap
           volumeMounts:
-            - name: criar-contatos-volume
-              mountPath: /app/logs/producer/criar-contatos
+            - name: producer-criar-contatos-volume
+              mountPath: /app/logs/producer/producer-criar-contatos
       imagePullSecrets:
         - name: acr-auth
       volumes:
-        - name: criar-contatos-volume
+        - name: producer-criar-contatos-volume
           persistentVolumeClaim:
-            claimName: criar-contatos-persistent-volume-claim
+            claimName: producer-criar-contatos-persistent-volume-claim
