@@ -32,7 +32,7 @@ spec:
                 name: criar-contatos-configmap
           volumeMounts:
             - name: criar-contatos-volume
-              mountPath: /app/logs/criar-contatos
+              mountPath: /app/logs/producer/criar-contatos
       imagePullSecrets:
         - name: acr-auth
       volumes:
