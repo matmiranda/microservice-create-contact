@@ -10,7 +10,7 @@ namespace CriarContatos.Api.Controllers
     /// Controller responsável pelo cadastro de contatos.
     /// </summary>
     [ApiController]
-    [Route("[controller]")]
+    [Route("criar/contato")]
     public class ContatoController : Controller
     {
         private readonly IContatoService contatoService;
