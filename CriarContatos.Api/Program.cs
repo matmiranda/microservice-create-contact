@@ -54,12 +54,12 @@ var app = builder.Build();
 // Mapeia o endpoint de health check
 app.MapHealthChecks("/criar/contato/health");
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.RoutePrefix = "criar/contato/swagger"; // define o prefixo para o swagger
+});
+
 
 // Adicionar middleware do Prometheus
 app.UseMetricServer();
