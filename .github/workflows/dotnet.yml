@@ -68,7 +68,7 @@ jobs:
       - name: Wait for API to Start
         run: |
           for i in {1..10}; do
-            if curl -f http://localhost:5102/health > /dev/null 2>&1; then
+            if curl -f http://localhost:5102/criar/contato/health > /dev/null 2>&1; then
               echo "API started successfully"
               exit 0
             fi
