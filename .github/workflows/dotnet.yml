@@ -161,8 +161,8 @@ jobs:
             CriarContatos.Api/k8s/producer-criar-contatos-service.yml
           images: |
             ${{ secrets.ACR_LOGIN_SERVER }}/producer-criar-contatos:latest
-          imagepullsecrets: |
-            acr-auth
+          # imagepullsecrets: |
+          #   acr-auth
 
       - name: Cleanup
         if: always()
