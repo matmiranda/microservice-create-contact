@@ -79,7 +79,7 @@ jobs:
           exit 1
 
       - name: Test API Health
-        run: curl -f http://localhost:5102/health || exit 1
+        run: curl -f http://localhost:5102/criar/contato/health || exit 1
 
       - name: Test API Metrics
         run: curl -f http://localhost:5102/metrics || exit 1
