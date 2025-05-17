@@ -54,10 +54,14 @@ var app = builder.Build();
 // Mapeia o endpoint de health check
 app.MapHealthChecks("/criar/contato/health");
 
-app.UseSwagger();
+app.UseSwagger(c =>
+{
+    c.RouteTemplate = "criar/contato/swagger/{documentName}/swagger.json";
+});
 app.UseSwaggerUI(c =>
 {
-    c.RoutePrefix = "criar/contato/swagger"; // define o prefixo para o swagger
+    c.SwaggerEndpoint("/criar/contato/swagger/v1/swagger.json", "API V1");
+    c.RoutePrefix = "criar/contato/swagger";
 });
 
 
