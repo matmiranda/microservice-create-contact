@@ -14,3 +14,10 @@ spec:
             name: producer-criar-contatos-service
             port:
               number: 80
+      - path: /criar/contato/health
+        pathType: Prefix
+        backend:
+          service:
+            name: producer-criar-contatos-service
+            port:
+              number: 80

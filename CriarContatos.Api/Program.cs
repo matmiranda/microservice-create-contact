@@ -52,7 +52,7 @@ builder.Host.UseSerilog();
 var app = builder.Build();
 
 // Mapeia o endpoint de health check
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/criar/contato/health");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
