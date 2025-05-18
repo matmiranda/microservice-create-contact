@@ -33,20 +33,20 @@ spec:
           volumeMounts:
             - name: producer-criar-contatos-volume
               mountPath: /app/logs/producer/producer-criar-contatos
-          # readinessProbe:
-          #   httpGet:
-          #     path: /criar/contato/health
-          #     port: 80
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 10
-          #   failureThreshold: 3
-          # livenessProbe:
-          #   httpGet:
-          #     path: /criar/contato/health
-          #     port: 80
-          #   initialDelaySeconds: 30
-          #   periodSeconds: 20
-          #   failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /criar/contato/health
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /criar/contato/health
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            failureThreshold: 3
       imagePullSecrets:
         - name: acr-auth
       volumes:
