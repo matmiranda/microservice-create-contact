@@ -65,8 +65,8 @@ app.UseSwaggerUI(c =>
 });
 
 
-// Adicionar middleware do Prometheus
-app.UseMetricServer();
+// Adicionar middleware do Prometheus com endpoint customizado
+app.UseMetricServer("/criar/contato/metrics");
 app.UseHttpMetrics();
 
 app.UseHttpsRedirection();
